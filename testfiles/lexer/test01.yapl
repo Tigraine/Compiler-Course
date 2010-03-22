@@ -1,0 +1,29 @@
+/* Lexer test input - OK expected.
+ * $Id: test01.yapl 136 2010-03-10 14:43:23Z mt $
+ */
+/* test comment: ** / */
+Program test01
+Declare
+	Const len = 10;
+	r: Integer;
+	b: Boolean;
+
+Procedure func(i: Integer): Integer
+Declare
+    r: Integer;
+Begin
+    r := 0;
+    While i >= 0 Do
+        r := r + i;
+        i := i - 1;
+    EndWhile
+	Return r;
+End func;
+
+Begin
+	r := 10;
+	b := func(r) > 2*r;
+	Write "program test01: ";
+	writebool(b);
+	writeln();
+End test01.

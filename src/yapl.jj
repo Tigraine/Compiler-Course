@@ -1,0 +1,217 @@
+/**
+JavaCC File
+*/
+options {
+  JDK_VERSION = "1.5";
+}
+PARSER_BEGIN(yapl)
+import java.io.FileInputStream;
+public class yapl {
+  public static void main(String args[]) throws ParseException {
+    try    {
+        if (args.length != 1)
+        {
+          System.out.println("YAPL-Compiler: No Input file specified.\n" +
+          "Usage: compilerbau <inputfile.yapl >");
+          return;        }
+        System.out.println("Compiling Program: " + args[0]);
+	    FileInputStream fis = new FileInputStream(args[0]);
+	    yapl parser = new yapl(fis);
+	    parser.Start();
+  	} catch (java.io.IOException ex)	{ }
+  }
+}
+PARSER_END(yapl)
+
+SKIP :
+{
+ 	" "
+|	"\r"
+|	"\t"
+|	"\n"
+}
+
+TOKEN:
+{
+  <# LETTER : (["A"-"Z"] | ["a"-"z"] | "_" ) > |
+  <# DIGIT : (["0"-"9"]) > |
+  <# OTHERCHAR: ("+" | "-" | "*" | "/" | "." | "," | ";" | ":" | "!"
+| "?" | "=" | "#" | "%" | "<" | ">" | "$" | "(" | ")"
+| "[" | "]" | "{" | "}" | "\\" | "@" | "&" | "^" | "|") >}
+
+TOKEN :
+{
+  	< NEW: "new" > |
+	< AND: "And" > |
+	< OR: "Or" > |
+	< DECLARE : "Declare" > |
+	< CONST : "Const" > |
+	< COMMENT : ("/*" (~["*"] | "*" ~["/"])* "*/") > |
+	< PROGRAM : "Program" > |
+	< BEGIN : "Begin" > |
+	< END: "End" > |
+	< IF : "If" > |
+	< THEN : "Then" > |
+	< ELSE : "Else" > |
+	< ENDIF : "EndIf" > |
+	< WHILE : "While" > |
+	< DO : "Do" > |
+	< ENDWHILE : "EndWhile" > |
+	< RETURN : "Return" > |
+	< WRITE : "Write" > |
+	< READONLY : "Readonly" > |
+	< PROCEDURE : "Procedure" > |
+	< Type : < PrimType > ( "[" "]")? > |
+  	< PrimType : "Integer" | "Boolean" > |
+  	< Literal: "True" | "False" | < NUMBER > > |	< IDENT : < LETTER > (< LETTER > | < DIGIT >)* > |
+	< NUMBER: (< DIGIT >)+ > |
+	< STRING: "\"" ( " " | < LETTER > | < DIGIT > | < OTHERCHAR > )* "\"" > 
+}
+
+void Selector() :
+{}
+{
+  "[" Expr() "]" (Selector())?}
+
+void ArrayLen() :
+{}{
+  "#" < IDENT > (Selector())?}
+void PrimaryExpr() :
+{}{
+  (< Literal > | "(" Expr() ")" | LOOKAHEAD(2) ProcedureCall() | < IDENT > (Selector())? | ArrayLen())}
+void ProcedureCall() :
+{}
+{
+  < IDENT > "(" (ArgumentList())? ")"}
+void ArgumentList() :
+{}
+{
+  Expr() ("," Expr())*}
+void UnaryExpr ():
+{}
+{
+  (AddOp())? PrimaryExpr()    }
+void MulExpr ():
+{}
+{
+  (UnaryExpr()) (MulOp() UnaryExpr())*    }
+void AddExpr ():
+{}
+{
+  MulExpr() (AddOp() MulExpr())*}
+
+void RelExpr ():
+{}
+{
+  AddExpr() (RelOp() AddExpr())*}
+
+void AddOp ():
+{}
+{
+  "+" | "-"}
+
+void MulOp ():
+{}
+{
+  "*" | "/" | "%"}
+
+void RelOp():
+{}
+{
+   "<" | "<=" | ">=" | ">"}
+
+void EqualOp():
+{}
+{
+    "==" | "!="}
+void EqualExpr ():
+{}
+{
+  RelExpr() (EqualOp() RelExpr())*}
+
+void CondAndExpr ():
+{}
+{
+  EqualExpr() (< AND > EqualExpr())*}
+void Expr():
+{}{
+  (CondAndExpr() (< OR > CondAndExpr())*) | CreationExpr()}
+void CreationExpr():
+{}{
+  < NEW > < PrimType > "[" Expr() "]" ("[" Expr() "]")*}
+
+void ConstDecl() :
+{}{
+  < CONST > <IDENT > "=" < Literal > ";"}
+
+void VarDecl() :
+{}{
+  < IDENT > ("," < IDENT >)* ":" < Type > ";"}
+
+void Decl() :
+{}
+{
+  < DECLARE > ( ConstDecl() | VarDecl() )*}
+
+void Assignment() :
+{}{
+  < IDENT > (Selector())? ":=" Expr()}
+void IfStatement() :
+{}
+{
+  < IF > Expr() < THEN > StatementList() (< ELSE > StatementList())? < ENDIF >}
+
+void WhileStatement() :
+{}{
+  < WHILE > Expr() < DO > StatementList() < ENDWHILE >}
+
+void ReturnStatement() :
+{}{
+  < RETURN > (Expr())?}
+
+void WriteStatement() :
+{}{
+  < WRITE > < STRING >}
+
+void Statement() :{}{
+  IfStatement() | WhileStatement() | ReturnStatement() | WriteStatement() | LOOKAHEAD(2) Assignment() |
+  ProcedureCall() | Block()}
+
+void StatementList():
+{}
+{
+  (Statement() ";")*}
+
+void Block() :
+{}
+{
+  (Decl())? < BEGIN > StatementList() < END >}
+
+void FormalParam() :
+{}
+{
+  < IDENT > ("," < IDENT >)* ":" (< READONLY >)? < Type >}
+
+void FormalParamList() :
+{}{
+  FormalParam() (";" FormalParam())*}
+
+void Procedure() :
+{}
+{
+  < PROCEDURE > < IDENT > "(" (FormalParamList())? ")"
+  (":" < Type >)? Block() < IDENT > ";"}
+
+void Program() :
+{}
+{
+  < PROGRAM > <IDENT > (Decl() | Procedure())*
+  < BEGIN > StatementList() < END > <IDENT > "."}
+
+void Start() :{  Token t;}{
+  {
+	  do	  {	    t = getNextToken();
+	    System.out.println(t.kind + " : " + t.toString());
+	  } while (t.kind != EOF);
+  }
+  <EOF>}

@@ -1,0 +1,23 @@
+/* Lexer test input - lexical error at line 21: '~' character.
+ * $Id: test02.yapl 136 2010-03-10 14:43:23Z mt $
+ */
+/* test comment: ** / */
+Program test02
+Declare
+	Const len = 10;
+	arr: Integer[];
+	r: Integer;
+
+Procedure func(arr: Readonly Integer[]; i: Integer): Integer
+Begin
+	Return arr[len-1] + i*len;
+End func;
+
+Begin
+	arr := new Integer[len];
+	arr[#arr-1] := 9;
+	r := func(arr, len);
+	Write "program test02: ";
+	writeint(~r);
+	writeln();
+End test02.
