@@ -18,21 +18,7 @@ options {
   JDK_VERSION = "1.5";
 }
 PARSER_BEGIN(yapl)
-import java.io.FileInputStream;
 public class yapl {
-  public static void main(String args[]) throws ParseException {
-    try    {
-        if (args.length != 1)
-        {
-          System.out.println("YAPL-Compiler: No Input file specified.\n" +
-          "Usage: compilerbau <inputfile.yapl >");
-          return;        }
-        System.out.println("Compiling Program: " + args[0]);
-	    FileInputStream fis = new FileInputStream(args[0]);
-	    yapl parser = new yapl(fis);
-	    parser.Start();
-  	} catch (java.io.IOException ex)	{ }
-  }
 }
 PARSER_END(yapl)
 
