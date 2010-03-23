@@ -57,11 +57,11 @@ public interface yaplConstants {
   /** RegularExpression Id. */
   int PROCEDURE = 27;
   /** RegularExpression Id. */
-  int Type = 28;
+  int Literal = 28;
   /** RegularExpression Id. */
-  int PrimType = 29;
+  int Type = 29;
   /** RegularExpression Id. */
-  int Literal = 30;
+  int PrimType = 30;
   /** RegularExpression Id. */
   int IDENT = 31;
   /** RegularExpression Id. */
@@ -102,9 +102,9 @@ public interface yaplConstants {
     "\"Write\"",
     "\"Readonly\"",
     "\"Procedure\"",
+    "<Literal>",
     "<Type>",
     "<PrimType>",
-    "<Literal>",
     "<IDENT>",
     "<NUMBER>",
     "<STRING>",

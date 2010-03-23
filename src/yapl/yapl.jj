@@ -61,9 +61,9 @@ TOKEN :
 	< WRITE : "Write" > |
 	< READONLY : "Readonly" > |
 	< PROCEDURE : "Procedure" > |
-	< Type : < PrimType > ( "[" "]")* > |
-  	< PrimType : "Integer" | "Boolean" > |
-  	< Literal: "True" | "False" | < NUMBER > > |	< IDENT : < LETTER > (< LETTER > | < DIGIT >)* > |
+  	< Literal: "True" | "False" | < NUMBER > > |
+  	< Type : < PrimType > ( "[" "]")* > |
+  	< PrimType : "Integer" | "Boolean" > |	< IDENT : < LETTER > (< LETTER > | < DIGIT >)* > |
 	< NUMBER: (< DIGIT >)+ > |
 	< STRING: "\"" ( " " | < LETTER > | < DIGIT > | < OTHERCHAR > )* "\"" > 
 }
