@@ -197,7 +197,7 @@ public int errorNumber() {
 
 @Override
 public int line() {
-	return currentToken.beginLine;
+	return currentToken.next.beginLine;
 }
 
 }

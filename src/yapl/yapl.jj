@@ -61,7 +61,7 @@ TOKEN :
 	< WRITE : "Write" > |
 	< READONLY : "Readonly" > |
 	< PROCEDURE : "Procedure" > |
-	< Type : < PrimType > ( "[" "]")? > |
+	< Type : < PrimType > ( "[" "]")* > |
   	< PrimType : "Integer" | "Boolean" > |
   	< Literal: "True" | "False" | < NUMBER > > |	< IDENT : < LETTER > (< LETTER > | < DIGIT >)* > |
 	< NUMBER: (< DIGIT >)+ > |
