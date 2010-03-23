@@ -17,33 +17,33 @@ public interface yaplConstants {
   /** RegularExpression Id. */
   int OTHERCHAR = 7;
   /** RegularExpression Id. */
-  int NEW = 8;
+  int COMMENT = 8;
   /** RegularExpression Id. */
-  int AND = 9;
+  int NEW = 9;
   /** RegularExpression Id. */
-  int OR = 10;
+  int AND = 10;
   /** RegularExpression Id. */
-  int DECLARE = 11;
+  int OR = 11;
   /** RegularExpression Id. */
-  int CONST = 12;
+  int DECLARE = 12;
   /** RegularExpression Id. */
-  int COMMENT = 13;
+  int PROGRAM = 13;
   /** RegularExpression Id. */
-  int PROGRAM = 14;
+  int BEGIN = 14;
   /** RegularExpression Id. */
-  int BEGIN = 15;
+  int END = 15;
   /** RegularExpression Id. */
-  int END = 16;
+  int IF = 16;
   /** RegularExpression Id. */
-  int IF = 17;
+  int THEN = 17;
   /** RegularExpression Id. */
-  int THEN = 18;
+  int ELSE = 18;
   /** RegularExpression Id. */
-  int ELSE = 19;
+  int ENDIF = 19;
   /** RegularExpression Id. */
-  int ENDIF = 20;
+  int WHILE = 20;
   /** RegularExpression Id. */
-  int WHILE = 21;
+  int CONST = 21;
   /** RegularExpression Id. */
   int DO = 22;
   /** RegularExpression Id. */
@@ -82,12 +82,11 @@ public interface yaplConstants {
     "<LETTER>",
     "<DIGIT>",
     "<OTHERCHAR>",
+    "<COMMENT>",
     "\"new\"",
     "\"And\"",
     "\"Or\"",
     "\"Declare\"",
-    "\"Const\"",
-    "<COMMENT>",
     "\"Program\"",
     "\"Begin\"",
     "\"End\"",
@@ -96,6 +95,7 @@ public interface yaplConstants {
     "\"Else\"",
     "\"EndIf\"",
     "\"While\"",
+    "\"Const\"",
     "\"Do\"",
     "\"EndWhile\"",
     "\"Return\"",

@@ -35,6 +35,7 @@ public class Program {
 		    System.out.println(" OK");
 		} catch (ParseException e) {
 			writeError(e);
+			//e.printStackTrace();
 		} catch (TokenMgrError e){
 			writeError(e);
 		}

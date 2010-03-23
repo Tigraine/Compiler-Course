@@ -41,12 +41,11 @@ TOKEN:
 
 TOKEN :
 {
+    < COMMENT : ("/*" (~["*"] | "*" ~["/"])* "*/") > | 
   	< NEW: "new" > |
 	< AND: "And" > |
 	< OR: "Or" > |
 	< DECLARE : "Declare" > |
-	< CONST : "Const" > |
-	< COMMENT : ("/*" (~["*"] | "*" ~["/"])* "*/") > |
 	< PROGRAM : "Program" > |
 	< BEGIN : "Begin" > |
 	< END: "End" > |
@@ -55,6 +54,7 @@ TOKEN :
 	< ELSE : "Else" > |
 	< ENDIF : "EndIf" > |
 	< WHILE : "While" > |
+	< CONST : "Const" > |
 	< DO : "Do" > |
 	< ENDWHILE : "EndWhile" > |
 	< RETURN : "Return" > |
@@ -209,6 +209,9 @@ void Program() :
   < BEGIN > StatementList() < END > <IDENT > "."}
 
 void Start() :{  Token t;}{
+  (
+    < COMMENT > |     Program()
+  )*
   {
 	  do	  {	    t = getNextToken();
 	    //System.out.println(t.kind + " : " + t.toString());

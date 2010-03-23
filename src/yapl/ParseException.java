@@ -187,7 +187,7 @@ public class ParseException extends Exception implements CompilerError {
 
 @Override
 public int column() {
-	return currentToken.beginColumn;
+	return this.currentToken.next.beginColumn;
 }
 
 @Override
