@@ -1,0 +1,9 @@
+/* Parser test input.
+ * <expected result> ERROR 3 (line 8, column 10)
+ * parse error: unexpected token '('
+ * $Id: test06.yapl 92 2009-03-10 17:24:49Z mt $
+ */
+Program test06
+Begin
+    Write("program test06: ");
+End test06.

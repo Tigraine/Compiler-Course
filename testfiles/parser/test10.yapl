@@ -1,0 +1,29 @@
+/* Parser test input.
+ * <expected result> ERROR 3 (line 29, column 1)
+ * parse error: unexpected token 'End'
+ * (due to missing EndIf before line 26)
+ * $Id: test10.yapl 92 2009-03-10 17:24:49Z mt $
+ */
+Program test10
+
+Procedure func(i: Integer): Integer
+Begin
+    Return i * i / 2;
+End func;
+
+Declare
+    r, x: Integer;
+Begin
+    r := readint();
+    If r < 10 Then
+        If r < 0 Then
+            x := func(-r);
+        Else
+            x := func(r);
+        EndIf;
+    Else 
+        x := func(r/10) * 10;
+    Write "x = ";
+    writeint(x);
+    writeln();
+End test10.

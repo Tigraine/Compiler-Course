@@ -1,0 +1,50 @@
+/* Parser test input.
+ * <expected result> OK
+ * 
+ * $Id: test01.yapl 137 2010-03-10 20:34:28Z mt $
+ */
+/* test comment: ** / */
+Program test01
+Declare
+	Const len = 10;
+
+Procedure func(arr: Readonly Integer[]; i: Integer): Integer
+Begin
+	Return arr[#arr-1] * arr[i];
+End func;
+
+Procedure createArray(i: Integer): Integer[]
+Declare
+    m: Integer[];
+    j: Integer;
+Begin
+    m := new Integer[i*i];
+    j := 0;
+    While j < #m Do
+        Declare
+            even: Boolean;
+        Begin
+            even := j % 2 == 0;
+            If even Then
+                m[j] := j+j;
+            Else
+                m[j] := 3*j + 1;
+            EndIf;
+        End;
+        j := j+1;
+    EndWhile;
+    Return m; 
+End createArray;
+
+Declare
+	arr: Integer[];
+    r: Integer;
+Begin
+    arr := createArray(len);
+	arr[0] := 10;
+	arr[len-1] := 9;
+	r := func(arr, 0);
+	Write "test01: ";
+	writeint(r);
+	writeln();
+End test01.

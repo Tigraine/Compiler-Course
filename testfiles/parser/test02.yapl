@@ -1,0 +1,26 @@
+/* Parser test input.
+ * <expected result> ERROR 2 (line 22, column 10)
+ * lexical error: '~' character
+ * $Id: test02.yapl 92 2009-03-10 17:24:49Z mt $
+ */
+/* test comment: ** / */
+Program test02
+Declare
+	Const len = 10;
+	arr: Integer[];
+	r: Integer;
+
+Procedure func(arr: Integer[]; i: Integer): Integer
+Begin
+	Return arr[len-1] + i*len;
+End func;
+
+Begin
+    arr := new Integer[len];
+    arr[0] := 10;
+    arr[len-1] := 9;
+    r := ~func(arr, len);
+    Write "program test02: ";
+    writeint(r);
+    writeln();
+End test02.

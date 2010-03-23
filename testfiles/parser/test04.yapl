@@ -1,0 +1,11 @@
+/* Parser test input.
+ * <expected result> ERROR 3 (line 8, column 19)
+ * parse error: unexpected token 'Const'
+ * $Id: test04.yapl 92 2009-03-10 17:24:49Z mt $
+ */
+Program test04
+
+Procedure func(): Const Integer[]
+Begin End func;
+
+Begin End test04.

@@ -1,0 +1,31 @@
+/* Parser test input - multi-dimensional arrays, array length expressions.
+ * <expected result> OK
+ *
+ * $Id: test12.yapl 137 2010-03-10 20:34:28Z mt $
+ */
+Program test12
+Procedure trace(matrix: Readonly Integer[][]): Integer
+Declare
+    i, t: Integer;
+Begin
+    t := 0;
+    i := 0;
+    While i < #matrix[0] Do
+        t := t + matrix[i][i];
+        i := i+1;
+    EndWhile;
+    Return t;
+End trace;
+
+Declare
+    Const len = 100;
+    matrix: Integer[][];
+    r: Integer;
+Begin
+    matrix := new Integer[len][len];
+    Write "matrix size = ";
+    writeint(#matrix);
+    writeln();
+    Write "trace(matrix) = ";
+    writeint(trace(matrix));
+End test12.
