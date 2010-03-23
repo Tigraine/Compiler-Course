@@ -633,7 +633,7 @@ public class yapl implements yaplConstants {
           do
           {
             t = getNextToken();
-            System.out.println(t.kind + " : " + t.toString());
+            //System.out.println(t.kind + " : " + t.toString());
           } while (t.kind != EOF);
     jj_consume_token(0);
   }

@@ -25,10 +25,11 @@ public class Program {
 			return;
 		}
 		try {
-			System.out.println("Compiling Program: " + args[0]);
+			System.out.print("YAPL compilaton: " + args[0]);
 		    FileInputStream fis = new FileInputStream(args[0]);
 		    yapl parser = new yapl(fis);
 		    parser.Start();
+		    System.out.println(" OK");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} catch (ParseException e) {

@@ -210,7 +210,7 @@ void Program() :
 void Start() :{  Token t;}{
   {
 	  do	  {	    t = getNextToken();
-	    System.out.println(t.kind + " : " + t.toString());
+	    //System.out.println(t.kind + " : " + t.toString());
 	  } while (t.kind != EOF);
   }
   <EOF>}
