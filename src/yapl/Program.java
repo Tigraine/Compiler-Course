@@ -1,3 +1,4 @@
+package yapl;
 /**** YAPL Compiler
 *
 *	Copyright 2010 Daniel Hölbling, Klagenfurt University
@@ -18,6 +19,8 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import yapl.interfaces.CompilerError;
+
 public class Program {
 	public static void main(String[] args) {
 		if (args.length != 1) {
@@ -30,11 +33,19 @@ public class Program {
 		    yapl parser = new yapl(fis);
 		    parser.Start();
 		    System.out.println(" OK");
-		} catch (IOException ex) {
-			ex.printStackTrace();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			writeError(e);
+		} catch (TokenMgrError e){
+			writeError(e);
 		}
+		catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	private static void writeError(CompilerError error){
+		System.out.println(" ERROR " + error.errorNumber() + 
+				" (line " + error.line() + ", column " + error.column() + ")");
 	}
 
 	private static void writeUsage() {
