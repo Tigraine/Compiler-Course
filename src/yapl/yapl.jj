@@ -62,12 +62,13 @@ TOKEN :
 	< READONLY : "Readonly" > |
 	< PROCEDURE : "Procedure" > |
   	< Literal: "True" | "False" | < NUMBER > > |
-  	< Type : < PrimType > ( "[" "]")* > |
   	< PrimType : "Integer" | "Boolean" > |	< IDENT : < LETTER > (< LETTER > | < DIGIT >)* > |
 	< NUMBER: (< DIGIT >)+ > |
 	< STRING: "\"" ( " " | < LETTER > | < DIGIT > | < OTHERCHAR > )* "\"" > 
 }
-
+void Type() :
+{}{
+  < PrimType > ( "[" "]")*}
 void Selector() :
 {}
 {
@@ -146,7 +147,7 @@ void ConstDecl() :
 
 void VarDecl() :
 {}{
-  < IDENT > ("," < IDENT >)* ":" < Type > ";"}
+  < IDENT > ("," < IDENT >)* ":" Type() ";"}
 
 void Decl() :
 {}
@@ -190,7 +191,7 @@ void Block() :
 void FormalParam() :
 {}
 {
-  < IDENT > ("," < IDENT >)* ":" (< READONLY >)? < Type >}
+  < IDENT > ("," < IDENT >)* ":" (< READONLY >)? Type()}
 
 void FormalParamList() :
 {}{
@@ -200,7 +201,7 @@ void Procedure() :
 {}
 {
   < PROCEDURE > < IDENT > "(" (FormalParamList())? ")"
-  (":" < Type >)? Block() < IDENT > ";"}
+  (":" Type())? Block() < IDENT > ";"}
 
 void Program() :
 {}

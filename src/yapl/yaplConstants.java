@@ -59,15 +59,13 @@ public interface yaplConstants {
   /** RegularExpression Id. */
   int Literal = 28;
   /** RegularExpression Id. */
-  int Type = 29;
+  int PrimType = 29;
   /** RegularExpression Id. */
-  int PrimType = 30;
+  int IDENT = 30;
   /** RegularExpression Id. */
-  int IDENT = 31;
+  int NUMBER = 31;
   /** RegularExpression Id. */
-  int NUMBER = 32;
-  /** RegularExpression Id. */
-  int STRING = 33;
+  int STRING = 32;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -103,7 +101,6 @@ public interface yaplConstants {
     "\"Readonly\"",
     "\"Procedure\"",
     "<Literal>",
-    "<Type>",
     "<PrimType>",
     "<IDENT>",
     "<NUMBER>",
