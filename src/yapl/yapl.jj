@@ -16,6 +16,7 @@
 ***/
 options {
   JDK_VERSION = "1.5";
+  STATIC = false;
 }
 PARSER_BEGIN(yapl)
 package yapl;
@@ -31,6 +32,11 @@ SKIP :
 |	"\n"
 }
 
+SPECIAL_TOKEN :
+{
+	< COMMENT : ("/*" (~["*"] | "*" ~["/"])* "*/") >
+}
+
 TOKEN:
 {
   <# LETTER : (["A"-"Z"] | ["a"-"z"] | "_" ) > |
@@ -39,9 +45,10 @@ TOKEN:
 | "?" | "=" | "#" | "%" | "<" | ">" | "$" | "(" | ")"
 | "[" | "]" | "{" | "}" | "\\" | "@" | "&" | "^" | "|") >}
 
+
+
 TOKEN :
 {
-    < COMMENT : ("/*" (~["*"] | "*" ~["/"])* "*/") > | 
   	< NEW: "new" > |
 	< AND: "And" > |
 	< OR: "Or" > |
@@ -210,8 +217,7 @@ void Program() :
   < BEGIN > StatementList() < END > <IDENT > "."}
 
 void Start() :{  Token t;}{
-  (
-    < COMMENT > |     Program()
+  (    Program()
   )*
   {
 	  do	  {	    t = getNextToken();

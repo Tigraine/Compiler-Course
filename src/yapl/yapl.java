@@ -2,7 +2,7 @@
 package yapl;
 public class yapl implements yaplConstants {
 
-  static final public void Type() throws ParseException {
+  final public void Type() throws ParseException {
     jj_consume_token(PrimType);
     label_1:
     while (true) {
@@ -19,7 +19,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void Selector() throws ParseException {
+  final public void Selector() throws ParseException {
     jj_consume_token(33);
     Expr();
     jj_consume_token(34);
@@ -33,7 +33,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void ArrayLen() throws ParseException {
+  final public void ArrayLen() throws ParseException {
     jj_consume_token(35);
     jj_consume_token(IDENT);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -46,7 +46,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void PrimaryExpr() throws ParseException {
+  final public void PrimaryExpr() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case Literal:
       jj_consume_token(Literal);
@@ -85,7 +85,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void ProcedureCall() throws ParseException {
+  final public void ProcedureCall() throws ParseException {
     jj_consume_token(IDENT);
     jj_consume_token(36);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -105,7 +105,7 @@ public class yapl implements yaplConstants {
     jj_consume_token(37);
   }
 
-  static final public void ArgumentList() throws ParseException {
+  final public void ArgumentList() throws ParseException {
     Expr();
     label_2:
     while (true) {
@@ -122,7 +122,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void UnaryExpr() throws ParseException {
+  final public void UnaryExpr() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 39:
     case 40:
@@ -135,7 +135,7 @@ public class yapl implements yaplConstants {
     PrimaryExpr();
   }
 
-  static final public void MulExpr() throws ParseException {
+  final public void MulExpr() throws ParseException {
     UnaryExpr();
     label_3:
     while (true) {
@@ -154,7 +154,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void AddExpr() throws ParseException {
+  final public void AddExpr() throws ParseException {
     MulExpr();
     label_4:
     while (true) {
@@ -172,7 +172,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void RelExpr() throws ParseException {
+  final public void RelExpr() throws ParseException {
     AddExpr();
     label_5:
     while (true) {
@@ -192,7 +192,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void AddOp() throws ParseException {
+  final public void AddOp() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 39:
       jj_consume_token(39);
@@ -207,7 +207,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void MulOp() throws ParseException {
+  final public void MulOp() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 41:
       jj_consume_token(41);
@@ -225,7 +225,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void RelOp() throws ParseException {
+  final public void RelOp() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 44:
       jj_consume_token(44);
@@ -246,7 +246,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void EqualOp() throws ParseException {
+  final public void EqualOp() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 48:
       jj_consume_token(48);
@@ -261,7 +261,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void EqualExpr() throws ParseException {
+  final public void EqualExpr() throws ParseException {
     RelExpr();
     label_6:
     while (true) {
@@ -279,7 +279,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void CondAndExpr() throws ParseException {
+  final public void CondAndExpr() throws ParseException {
     EqualExpr();
     label_7:
     while (true) {
@@ -296,7 +296,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void Expr() throws ParseException {
+  final public void Expr() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case Literal:
     case IDENT:
@@ -329,7 +329,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void CreationExpr() throws ParseException {
+  final public void CreationExpr() throws ParseException {
     jj_consume_token(NEW);
     jj_consume_token(PrimType);
     jj_consume_token(33);
@@ -351,7 +351,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void ConstDecl() throws ParseException {
+  final public void ConstDecl() throws ParseException {
     jj_consume_token(CONST);
     jj_consume_token(IDENT);
     jj_consume_token(50);
@@ -359,7 +359,7 @@ public class yapl implements yaplConstants {
     jj_consume_token(51);
   }
 
-  static final public void VarDecl() throws ParseException {
+  final public void VarDecl() throws ParseException {
     jj_consume_token(IDENT);
     label_10:
     while (true) {
@@ -379,7 +379,7 @@ public class yapl implements yaplConstants {
     jj_consume_token(51);
   }
 
-  static final public void Decl() throws ParseException {
+  final public void Decl() throws ParseException {
     jj_consume_token(DECLARE);
     label_11:
     while (true) {
@@ -407,7 +407,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void Assignment() throws ParseException {
+  final public void Assignment() throws ParseException {
     jj_consume_token(IDENT);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 33:
@@ -421,7 +421,7 @@ public class yapl implements yaplConstants {
     Expr();
   }
 
-  static final public void IfStatement() throws ParseException {
+  final public void IfStatement() throws ParseException {
     jj_consume_token(IF);
     Expr();
     jj_consume_token(THEN);
@@ -438,7 +438,7 @@ public class yapl implements yaplConstants {
     jj_consume_token(ENDIF);
   }
 
-  static final public void WhileStatement() throws ParseException {
+  final public void WhileStatement() throws ParseException {
     jj_consume_token(WHILE);
     Expr();
     jj_consume_token(DO);
@@ -446,7 +446,7 @@ public class yapl implements yaplConstants {
     jj_consume_token(ENDWHILE);
   }
 
-  static final public void ReturnStatement() throws ParseException {
+  final public void ReturnStatement() throws ParseException {
     jj_consume_token(RETURN);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NEW:
@@ -464,12 +464,12 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void WriteStatement() throws ParseException {
+  final public void WriteStatement() throws ParseException {
     jj_consume_token(WRITE);
     jj_consume_token(STRING);
   }
 
-  static final public void Statement() throws ParseException {
+  final public void Statement() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IF:
       IfStatement();
@@ -505,7 +505,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void StatementList() throws ParseException {
+  final public void StatementList() throws ParseException {
     label_12:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -527,7 +527,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void Block() throws ParseException {
+  final public void Block() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DECLARE:
       Decl();
@@ -541,7 +541,7 @@ public class yapl implements yaplConstants {
     jj_consume_token(END);
   }
 
-  static final public void FormalParam() throws ParseException {
+  final public void FormalParam() throws ParseException {
     jj_consume_token(IDENT);
     label_13:
     while (true) {
@@ -568,7 +568,7 @@ public class yapl implements yaplConstants {
     Type();
   }
 
-  static final public void FormalParamList() throws ParseException {
+  final public void FormalParamList() throws ParseException {
     FormalParam();
     label_14:
     while (true) {
@@ -585,7 +585,7 @@ public class yapl implements yaplConstants {
     }
   }
 
-  static final public void Procedure() throws ParseException {
+  final public void Procedure() throws ParseException {
     jj_consume_token(PROCEDURE);
     jj_consume_token(IDENT);
     jj_consume_token(36);
@@ -612,7 +612,7 @@ public class yapl implements yaplConstants {
     jj_consume_token(51);
   }
 
-  static final public void Program() throws ParseException {
+  final public void Program() throws ParseException {
     jj_consume_token(PROGRAM);
     jj_consume_token(IDENT);
     label_15:
@@ -646,12 +646,11 @@ public class yapl implements yaplConstants {
     jj_consume_token(54);
   }
 
-  static final public void Start() throws ParseException {
+  final public void Start() throws ParseException {
   Token t;
     label_16:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case COMMENT:
       case PROGRAM:
         ;
         break;
@@ -659,18 +658,7 @@ public class yapl implements yaplConstants {
         jj_la1[38] = jj_gen;
         break label_16;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case COMMENT:
-        jj_consume_token(COMMENT);
-        break;
-      case PROGRAM:
-        Program();
-        break;
-      default:
-        jj_la1[39] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+      Program();
     }
           do
           {
@@ -680,47 +668,32 @@ public class yapl implements yaplConstants {
     jj_consume_token(0);
   }
 
-  static private boolean jj_2_1(int xla) {
+  private boolean jj_2_1(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_1(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(0, xla); }
   }
 
-  static private boolean jj_2_2(int xla) {
+  private boolean jj_2_2(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_2(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3R_20() {
-    if (jj_scan_token(33)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_1() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_2() {
-    if (jj_3R_18()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_17() {
+  private boolean jj_3R_17() {
     if (jj_scan_token(IDENT)) return true;
     if (jj_scan_token(36)) return true;
     return false;
   }
 
-  static private boolean jj_3R_19() {
+  private boolean jj_3R_19() {
     if (jj_3R_20()) return true;
     return false;
   }
 
-  static private boolean jj_3R_18() {
+  private boolean jj_3R_18() {
     if (jj_scan_token(IDENT)) return true;
     Token xsp;
     xsp = jj_scanpos;
@@ -729,19 +702,33 @@ public class yapl implements yaplConstants {
     return false;
   }
 
-  static private boolean jj_initialized_once = false;
+  private boolean jj_3R_20() {
+    if (jj_scan_token(33)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    if (jj_3R_18()) return true;
+    return false;
+  }
+
   /** Generated Token Manager. */
-  static public yaplTokenManager token_source;
-  static SimpleCharStream jj_input_stream;
+  public yaplTokenManager token_source;
+  SimpleCharStream jj_input_stream;
   /** Current token. */
-  static public Token token;
+  public Token token;
   /** Next token. */
-  static public Token jj_nt;
-  static private int jj_ntk;
-  static private Token jj_scanpos, jj_lastpos;
-  static private int jj_la;
-  static private int jj_gen;
-  static final private int[] jj_la1 = new int[40];
+  public Token jj_nt;
+  private int jj_ntk;
+  private Token jj_scanpos, jj_lastpos;
+  private int jj_la;
+  private int jj_gen;
+  final private int[] jj_la1 = new int[39];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -749,14 +736,14 @@ public class yapl implements yaplConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x10000000,0x40000000,0x50000200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x400,0x800,0x50000200,0x0,0x0,0x40200000,0x40200000,0x0,0x40000,0x50000200,0x3110000,0x40005000,0x43115000,0x1000,0x0,0x4000000,0x0,0x40000000,0x0,0x8001000,0x8001000,0x2100,0x2100,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x10000000,0x40000000,0x50000200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x400,0x800,0x50000200,0x0,0x0,0x40200000,0x40200000,0x0,0x40000,0x50000200,0x3110000,0x40005000,0x43115000,0x1000,0x0,0x4000000,0x0,0x40000000,0x0,0x8001000,0x8001000,0x2000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x2,0x2,0x2,0x2,0x10,0x8,0x198,0x40,0x180,0xe00,0x180,0xf000,0x180,0xe00,0xf000,0x30000,0x30000,0x0,0x0,0x198,0x2,0x40,0x0,0x0,0x2,0x0,0x198,0x0,0x0,0x0,0x0,0x40,0x0,0x80000,0x0,0x100000,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x2,0x2,0x2,0x2,0x10,0x8,0x198,0x40,0x180,0xe00,0x180,0xf000,0x180,0xe00,0xf000,0x30000,0x30000,0x0,0x0,0x198,0x2,0x40,0x0,0x0,0x2,0x0,0x198,0x0,0x0,0x0,0x0,0x40,0x0,0x80000,0x0,0x100000,0x0,0x0,0x0,};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[2];
-  static private boolean jj_rescan = false;
-  static private int jj_gc = 0;
+  final private JJCalls[] jj_2_rtns = new JJCalls[2];
+  private boolean jj_rescan = false;
+  private int jj_gc = 0;
 
   /** Constructor with InputStream. */
   public yapl(java.io.InputStream stream) {
@@ -764,80 +751,59 @@ public class yapl implements yaplConstants {
   }
   /** Constructor with InputStream and supplied encoding */
   public yapl(java.io.InputStream stream, String encoding) {
-    if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser.  ");
-      System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
-      System.out.println("       during parser generation.");
-      throw new Error();
-    }
-    jj_initialized_once = true;
     try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new yaplTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
-  static public void ReInit(java.io.InputStream stream) {
+  public void ReInit(java.io.InputStream stream) {
      ReInit(stream, null);
   }
   /** Reinitialise. */
-  static public void ReInit(java.io.InputStream stream, String encoding) {
+  public void ReInit(java.io.InputStream stream, String encoding) {
     try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source.ReInit(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Constructor. */
   public yapl(java.io.Reader stream) {
-    if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser. ");
-      System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
-      System.out.println("       during parser generation.");
-      throw new Error();
-    }
-    jj_initialized_once = true;
     jj_input_stream = new SimpleCharStream(stream, 1, 1);
     token_source = new yaplTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
-  static public void ReInit(java.io.Reader stream) {
+  public void ReInit(java.io.Reader stream) {
     jj_input_stream.ReInit(stream, 1, 1);
     token_source.ReInit(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Constructor with generated Token Manager. */
   public yapl(yaplTokenManager tm) {
-    if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser. ");
-      System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
-      System.out.println("       during parser generation.");
-      throw new Error();
-    }
-    jj_initialized_once = true;
     token_source = tm;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -847,11 +813,11 @@ public class yapl implements yaplConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  static private Token jj_consume_token(int kind) throws ParseException {
+  private Token jj_consume_token(int kind) throws ParseException {
     Token oldToken;
     if ((oldToken = token).next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -876,8 +842,8 @@ public class yapl implements yaplConstants {
   }
 
   static private final class LookaheadSuccess extends java.lang.Error { }
-  static final private LookaheadSuccess jj_ls = new LookaheadSuccess();
-  static private boolean jj_scan_token(int kind) {
+  final private LookaheadSuccess jj_ls = new LookaheadSuccess();
+  private boolean jj_scan_token(int kind) {
     if (jj_scanpos == jj_lastpos) {
       jj_la--;
       if (jj_scanpos.next == null) {
@@ -900,7 +866,7 @@ public class yapl implements yaplConstants {
 
 
 /** Get the next Token. */
-  static final public Token getNextToken() {
+  final public Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
     jj_ntk = -1;
@@ -909,7 +875,7 @@ public class yapl implements yaplConstants {
   }
 
 /** Get the specific Token. */
-  static final public Token getToken(int index) {
+  final public Token getToken(int index) {
     Token t = token;
     for (int i = 0; i < index; i++) {
       if (t.next != null) t = t.next;
@@ -918,20 +884,20 @@ public class yapl implements yaplConstants {
     return t;
   }
 
-  static private int jj_ntk() {
+  private int jj_ntk() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
     else
       return (jj_ntk = jj_nt.kind);
   }
 
-  static private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
-  static private int[] jj_expentry;
-  static private int jj_kind = -1;
-  static private int[] jj_lasttokens = new int[100];
-  static private int jj_endpos;
+  private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
+  private int[] jj_expentry;
+  private int jj_kind = -1;
+  private int[] jj_lasttokens = new int[100];
+  private int jj_endpos;
 
-  static private void jj_add_error_token(int kind, int pos) {
+  private void jj_add_error_token(int kind, int pos) {
     if (pos >= 100) return;
     if (pos == jj_endpos + 1) {
       jj_lasttokens[jj_endpos++] = kind;
@@ -957,14 +923,14 @@ public class yapl implements yaplConstants {
   }
 
   /** Generate ParseException. */
-  static public ParseException generateParseException() {
+  public ParseException generateParseException() {
     jj_expentries.clear();
     boolean[] la1tokens = new boolean[55];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 40; i++) {
+    for (int i = 0; i < 39; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -994,14 +960,14 @@ public class yapl implements yaplConstants {
   }
 
   /** Enable tracing. */
-  static final public void enable_tracing() {
+  final public void enable_tracing() {
   }
 
   /** Disable tracing. */
-  static final public void disable_tracing() {
+  final public void disable_tracing() {
   }
 
-  static private void jj_rescan_token() {
+  private void jj_rescan_token() {
     jj_rescan = true;
     for (int i = 0; i < 2; i++) {
     try {
@@ -1021,7 +987,7 @@ public class yapl implements yaplConstants {
     jj_rescan = false;
   }
 
-  static private void jj_save(int index, int xla) {
+  private void jj_save(int index, int xla) {
     JJCalls p = jj_2_rtns[index];
     while (p.gen > jj_gen) {
       if (p.next == null) { p = p.next = new JJCalls(); break; }

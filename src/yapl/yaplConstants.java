@@ -11,13 +11,13 @@ public interface yaplConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int LETTER = 5;
+  int COMMENT = 5;
   /** RegularExpression Id. */
-  int DIGIT = 6;
+  int LETTER = 6;
   /** RegularExpression Id. */
-  int OTHERCHAR = 7;
+  int DIGIT = 7;
   /** RegularExpression Id. */
-  int COMMENT = 8;
+  int OTHERCHAR = 8;
   /** RegularExpression Id. */
   int NEW = 9;
   /** RegularExpression Id. */
@@ -77,10 +77,10 @@ public interface yaplConstants {
     "\"\\r\"",
     "\"\\t\"",
     "\"\\n\"",
+    "<COMMENT>",
     "<LETTER>",
     "<DIGIT>",
     "<OTHERCHAR>",
-    "<COMMENT>",
     "\"new\"",
     "\"And\"",
     "\"Or\"",
