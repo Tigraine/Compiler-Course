@@ -58,6 +58,7 @@ Example for running:   ant run -Dyapl=test01.yapl
   <target name="clean" description="remove all generated files" > 
       <!-- Delete the ${build} and ${dist} directory trees --> 
       <delete dir="${build}"/> 
+	  <delete dir="bin" />
       <delete> 
           <fileset dir="${src}" includes="yapl\yapl.java"/> 
 		  <fileset dir="${src}" includes="yapl\yaplConstants.java"/> 
