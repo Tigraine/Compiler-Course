@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import yapl.interfaces.CompilerError;
+import yapl.lib.CompilerMessage;
 
 public class Program {
 	public static void main(String[] args) {
@@ -27,26 +28,24 @@ public class Program {
 			writeUsage();
 			return;
 		}
+		String programName = args[0];
 		try {
-			System.out.print("YAPL compilaton: " + args[0]);
-		    FileInputStream fis = new FileInputStream(args[0]);
+		    FileInputStream fis = new FileInputStream(programName);
 		    yapl parser = new yapl(fis);
 		    parser.Start();
-		    System.out.println(" OK");
+		    CompilerMessage.printOK(programName);
 		} catch (ParseException e) {
-			writeError(e);
-			e.printStackTrace();
+			writeError(e, programName);
 		} catch (TokenMgrError e){
-			writeError(e);
+			writeError(e, programName);
 		}
 		catch (IOException ex) {
 			ex.printStackTrace();
 		}
 	}
 	
-	private static void writeError(CompilerError error){
-		System.out.println(" ERROR " + error.errorNumber() + 
-				" (line " + error.line() + ", column " + error.column() + ")");
+	private static void writeError(CompilerError error, String programName){
+		CompilerMessage.printError(error, programName);
 	}
 
 	private static void writeUsage() {
