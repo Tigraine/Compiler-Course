@@ -20,7 +20,9 @@ options {
 }
 PARSER_BEGIN(yapl)
 package yapl;
+import yapl.interfaces.*;
 public class yapl {
+  private Symboltable symbolTable = new SymboltableImpl();
 }
 PARSER_END(yapl)
 
@@ -193,7 +195,11 @@ void StatementList():
 void Block() :
 {}
 {
-  (Decl())? < BEGIN > StatementList() < END >}
+  {
+    symbolTable.openScope(false);  }
+  (Decl())? < BEGIN > StatementList() < END >
+  {
+    symbolTable.closeScope();  }}
 
 void FormalParam() :
 {}
@@ -207,21 +213,26 @@ void FormalParamList() :
 void Procedure() :
 {}
 {
+  {
+    symbolTable.openScope(false);  }
   < PROCEDURE > < IDENT > "(" (FormalParamList())? ")"
-  (":" Type())? Block() < IDENT > ";"}
+  (":" Type())? Block() < IDENT > ";"
+  {
+    symbolTable.closeScope();  }}
 
 void Program() :
 {}
 {
+  {
+    symbolTable.openScope(false);  }
   < PROGRAM > <IDENT > (Decl() | Procedure())*
-  < BEGIN > StatementList() < END > <IDENT > "."}
+  < BEGIN > StatementList() < END > <IDENT > "."
+  {
+    symbolTable.closeScope();  }}
 
 void Start() :{  Token t;}{
+  {
+    symbolTable.setDebug(true);  }
   (    Program()
   )*
-  {
-	  do	  {	    t = getNextToken();
-	    //System.out.println(t.kind + " : " + t.toString());
-	  } while (t.kind != EOF);
-  }
   <EOF>}
