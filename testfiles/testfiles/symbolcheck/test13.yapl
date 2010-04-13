@@ -1,0 +1,19 @@
+/* Symbol check test input.
+ * <expected result> OK
+ * 
+ * $Id: test13.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test13
+
+Procedure test13(test13: Integer)
+Declare
+    Const test13 = 10;
+Begin
+    Declare
+        test13: Integer;
+    Begin
+    End;
+End test13;
+
+Begin
+End test13.

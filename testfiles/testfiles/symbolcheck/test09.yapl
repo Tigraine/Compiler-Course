@@ -1,0 +1,11 @@
+/* Symbol check test input.
+ * <expected result> ERROR 10 (line 9, column 8)
+ * symbol 'k' already declared in current scope (as variable)
+ * $Id: test09.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test09
+Declare
+    k: Integer;
+    m, k: Integer;
+Begin
+End test09.

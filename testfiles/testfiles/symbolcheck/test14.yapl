@@ -1,0 +1,12 @@
+/* Symbol check test input.
+ * <expected result> ERROR 12 (line 11, column 5)
+ * illegal use of variable len
+ * $Id: test14.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test14
+Declare
+    len: Integer;
+
+Begin
+    len();
+End test14.

@@ -1,0 +1,17 @@
+/* Symbol check test input.
+ * <expected result> ERROR 12 (line 11, column 20)
+ * illegal use of procedure 'fact'
+ * $Id: test20.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test20
+
+Procedure fact(k: Integer): Integer
+Begin
+    If (k > 2) Then
+        Return k * fact[k-1];
+    EndIf;
+    Return k;
+End fact;
+
+Begin
+End test20.

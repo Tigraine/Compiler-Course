@@ -1,0 +1,13 @@
+/* Symbol check test input.
+ * <expected result> ERROR 13 (line 10, column 5)
+ * End pro does not match procedure proc
+ * $Id: test19.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test19
+
+Procedure proc()
+Begin
+End pro;
+
+Begin
+End test19.

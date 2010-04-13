@@ -1,0 +1,18 @@
+/* Symbol check test input.
+ * <expected result> ERROR 12 (line 17, column 5)
+ * illegal use of constant 'writeln'
+ * $Id: test21.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test21
+Declare
+    Const writeln = True;       /* hides predefined procedure */
+
+Procedure writeint(i: Integer)  /* hides predefined procedure */
+Begin
+End writeint;
+
+Begin
+    writebool(writeln);         /* calls predefined procedure */
+    writeint(7);                /* calls user-defined procedure */
+    writeln();
+End test21.

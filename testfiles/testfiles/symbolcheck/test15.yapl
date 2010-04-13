@@ -1,0 +1,16 @@
+/* Symbol check test input.
+ * <expected result> ERROR 12 (line 15, column 14)
+ * illegal use of procedure func
+ * $Id: test15.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test15
+Declare
+    k: Integer;
+
+Procedure func(): Integer
+Begin
+End func;
+
+Begin
+    k := 5 + func;
+End test15.

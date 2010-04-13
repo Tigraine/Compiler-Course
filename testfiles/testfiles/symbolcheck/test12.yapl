@@ -1,0 +1,17 @@
+/* Symbol check test input.
+ * <expected result> ERROR 10 (line 12, column 11)
+ * symbol 'proc' already declared in current scope (as procedure)
+ * $Id: test12.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test12
+
+Procedure proc()
+Begin
+End proc;
+
+Procedure proc(k: Integer)
+Begin
+End proc;
+
+Begin
+End test12.

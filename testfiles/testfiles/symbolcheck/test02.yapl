@@ -1,0 +1,10 @@
+/* Symbol check test input.
+ * <expected result> ERROR 11 (line 9, column 5)
+ * identifier 'r' not declared
+ * $Id: test02.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test02
+
+Begin
+    r := 5;
+End test02.

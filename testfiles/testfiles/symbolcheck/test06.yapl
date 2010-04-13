@@ -1,0 +1,16 @@
+/* Symbol check test input.
+ * <expected result> ERROR 11 (line 15, column 5)
+ * identifier r not declared
+ * $Id: test06.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test06
+
+Procedure proc()
+Declare
+    r: Integer;
+Begin
+End proc;
+
+Begin
+    r := 5;
+End test06.

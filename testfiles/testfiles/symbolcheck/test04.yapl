@@ -1,0 +1,12 @@
+/* Symbol check test input.
+ * <expected result> ERROR 11 (line 11, column 10)
+ * identifier len not declared
+ * $Id: test04.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test04
+Declare
+    r: Integer;
+
+Begin
+    r := len();
+End test04.

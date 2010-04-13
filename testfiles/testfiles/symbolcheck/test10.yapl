@@ -1,0 +1,15 @@
+/* Symbol check test input.
+ * <expected result> ERROR 10 (line 10, column 31)
+ * symbol 'm' already declared in current scope (as parameter)
+ * $Id: test10.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test10
+Declare
+    k: Integer;
+
+Procedure proc(k, m: Integer; m: Boolean)
+Begin
+End proc;
+
+Begin
+End test10.

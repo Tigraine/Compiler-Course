@@ -1,0 +1,8 @@
+/* Symbol check test input.
+ * <expected result> ERROR 13 (line 8, column 5)
+ * End test does not match program test18
+ * $Id: test18.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test18
+Begin
+End test.

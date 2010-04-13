@@ -1,0 +1,19 @@
+/* Symbol check test input.
+ * <expected result> ERROR 12 (line 15, column 5)
+ * illegal use of parameter 'b2'
+ * $Id: test22.yapl 99 2009-03-23 14:30:37Z mt $
+ */
+Program test22
+Declare
+    b: Integer;
+
+Procedure func(k: Integer; b1, b2: Boolean): Boolean
+Declare
+    b: Boolean;            /* hides global variable b */
+Begin
+    b := b1 And b2;
+    b2();
+End func;
+
+Begin
+End test22.
