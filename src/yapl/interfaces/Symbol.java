@@ -13,14 +13,16 @@ import yapl.lib.Type;
 public interface Symbol
 {
 	/* symbol kinds */
-	public static final int Program       = 0;
-	public static final int Procedure     = 1;
-	public static final int Variable      = 2;
-	public static final int Constant      = 3;
-	public static final int Parameter     = 4; // formal parameter
+	public enum SymbolKind {
+		Program, 
+		Procedure, 
+		Variable, 
+		Constant, 
+		Parameter //Formal Parameter
+	}
 
 	/** Return the symbol's kind. */
-	public int getKind();
+	public SymbolKind getKind();
 	
 	/** Return the text version of the symbol's kind. 
 	 * @return One of the literal strings: <code>program, procedure, variable, constant,
@@ -29,7 +31,7 @@ public interface Symbol
 	public String getKindString();
 
 	/** Set the symbol's kind. */
-	public void setKind(int kind);
+	public void setKind(SymbolKind kind);
 	
 	/** Return the symbol's name (identifier). */
 	public String getName();
