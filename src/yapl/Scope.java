@@ -8,6 +8,7 @@ import yapl.lib.YAPLException;
 public class Scope {
 	private Hashtable<String, Symbol> symbols = new Hashtable<String, Symbol>();
 	private Scope parent;
+	private Symbol parentSymbol;
 	
 	public Scope() {
 		this(null);
@@ -35,5 +36,13 @@ public class Scope {
 	}
 	public Scope getParent() {
 		return parent;
+	}
+	
+	public void setParentSymbol(Symbol parentSymbol) {
+		this.parentSymbol = parentSymbol;
+	}
+	public Symbol getNearestParentSymbol() {
+		if (parentSymbol == null && parent != null) return parent.getNearestParentSymbol();
+		return parentSymbol;
 	}
 }

@@ -23,7 +23,7 @@ public class ScopeTests extends TestCase {
 	
 	public void testGetSymbol() throws YAPLException {
 		Scope scope = new Scope();
-		SymbolImpl symbol = new SymbolImpl("a", Symbol.SymbolKind.Variable);
+		SymbolImpl symbol = getSampleSymbol();
 		scope.addSymbol(symbol);
 		
 		Symbol returnSymbol = scope.getSymbol("a");
@@ -33,8 +33,8 @@ public class ScopeTests extends TestCase {
 	
 	public void testAddSymbolShouldFailWhenSymbolAlreadyDefinedInScope() throws YAPLException {
 		Scope scope = new Scope();
-		SymbolImpl symbol1 = new SymbolImpl("a", Symbol.SymbolKind.Variable);
-		SymbolImpl symbol2 = new SymbolImpl("a", Symbol.SymbolKind.Variable);
+		SymbolImpl symbol1 = getSampleSymbol();
+		SymbolImpl symbol2 = getSampleSymbol();
 		scope.addSymbol(symbol1);
 		try {
 			scope.addSymbol(symbol2);
@@ -46,7 +46,7 @@ public class ScopeTests extends TestCase {
 	public void testRecursivelySearchesSymbols() throws YAPLException {
 		Scope scope1 = new Scope();
 		Scope scope2 = new Scope(scope1);
-		SymbolImpl symbol1 = new SymbolImpl("a", Symbol.SymbolKind.Variable);
+		SymbolImpl symbol1 = getSampleSymbol();
 		scope1.addSymbol(symbol1);
 		Symbol symbol = scope2.getSymbol("a"); //Retrieve from child scope
 		Assert.assertEquals(symbol1, symbol);
@@ -64,8 +64,8 @@ public class ScopeTests extends TestCase {
 	public void testAlwaysResolvesToNearestScope() throws YAPLException {
 		Scope scope1 = new Scope();
 		Scope scope2 = new Scope(scope1);
-		SymbolImpl symbol1 = new SymbolImpl("a", Symbol.SymbolKind.Variable);
-		SymbolImpl symbol2 = new SymbolImpl("a", Symbol.SymbolKind.Variable);
+		SymbolImpl symbol1 = getSampleSymbol();
+		SymbolImpl symbol2 = getSampleSymbol();
 		
 		scope1.addSymbol(symbol1);
 		scope2.addSymbol(symbol2);
@@ -76,7 +76,7 @@ public class ScopeTests extends TestCase {
 	
 	public void testSetsGlobalOnSymbolIfAddedToHightestScope() throws YAPLException {
 		Scope scope = new Scope();
-		SymbolImpl symbol = new SymbolImpl("a", Symbol.SymbolKind.Variable);
+		SymbolImpl symbol = getSampleSymbol();
 		
 		scope.addSymbol(symbol);
 		
@@ -86,10 +86,38 @@ public class ScopeTests extends TestCase {
 	public void testSetsGlobalOffForSymbolsAddedToLowerScopes() throws YAPLException {
 		Scope scope = new Scope();
 		Scope scope2 = new Scope(scope);
-		SymbolImpl symbol = new SymbolImpl("a", Symbol.SymbolKind.Variable);
+		SymbolImpl symbol = getSampleSymbol();
 		
 		scope2.addSymbol(symbol);
 		
 		Assert.assertEquals(false, symbol.isGlobal());
+	}
+	
+	public void testSetCurrentSymbol() {
+		Scope scope = new Scope();
+		SymbolImpl symbol = getSampleSymbol();
+	
+		scope.setParentSymbol(symbol);
+		
+		Symbol nearestParentSymbol = scope.getNearestParentSymbol();
+		
+		Assert.assertEquals(symbol, nearestParentSymbol);
+	}
+
+	private SymbolImpl getSampleSymbol() {
+		SymbolImpl symbol = new SymbolImpl("a", Symbol.SymbolKind.Variable);
+		return symbol;
+	}
+	
+	public void testGetCurrentSymbolRecursion() {
+		Scope scope = new Scope();
+		Scope scope2 = new Scope(scope);
+		
+		SymbolImpl symbol = getSampleSymbol();
+		scope.setParentSymbol(symbol);
+		
+		Symbol nearestParentSymbol = scope2.getNearestParentSymbol();
+		
+		Assert.assertEquals(symbol, nearestParentSymbol);
 	}
 }

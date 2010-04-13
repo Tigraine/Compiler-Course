@@ -23,8 +23,7 @@ public class SymboltableImpl implements Symboltable {
 
 	@Override
 	public Symbol getNearestParentSymbol(int kind) {
-		// TODO Auto-generated method stub
-		return null;
+		return currentScope.getNearestParentSymbol();
 	}
 
 	@Override
@@ -47,7 +46,7 @@ public class SymboltableImpl implements Symboltable {
 
 	@Override
 	public void setParentSymbol(Symbol sym) {
-		// TODO Auto-generated method stub
+		currentScope.setParentSymbol(sym);
 	}
 
 }
