@@ -21,6 +21,8 @@ options {
 PARSER_BEGIN(yapl)
 package yapl;
 import yapl.interfaces.*;
+import yapl.lib.*;
+import java.util.*;
 public class yapl {
   private Symboltable symbolTable = new SymboltableImpl();
 }
@@ -154,11 +156,23 @@ void ConstDecl() :
 {}{
   < CONST > <IDENT > "=" < Literal > ";"}
 
-void VarDecl() :
-{}{
-  < IDENT > ("," < IDENT >)* ":" Type() ";"}
+void VarDecl() throws YAPLException :
+{
+  Token t;
+  Token x = null;
+  ArrayList<Token> tokens = new ArrayList<Token>(); 
+}{
+  t = < IDENT >
+  ("," x = < IDENT >
+  {
+    tokens.add(x);  })* ":" Type() ";"
+  {
+    symbolTable.addSymbol(new SymbolImpl(t.image, Symbol.SymbolKind.Variable));
+    for(Token i : tokens) {
+      symbolTable.addSymbol(new SymbolImpl(i.image, Symbol.SymbolKind.Variable));
+    }  }}
 
-void Decl() :
+void Decl() throws YAPLException :
 {}
 {
   < DECLARE > ( ConstDecl() | VarDecl() )*}
@@ -166,33 +180,33 @@ void Decl() :
 void Assignment() :
 {}{
   < IDENT > (Selector())? ":=" Expr()}
-void IfStatement() :
+void IfStatement() throws YAPLException :
 {}
 {
   < IF > Expr() < THEN > StatementList() (< ELSE > StatementList())? < ENDIF >}
 
-void WhileStatement() :
+void WhileStatement() throws YAPLException :
 {}{
   < WHILE > Expr() < DO > StatementList() < ENDWHILE >}
 
-void ReturnStatement() :
+void ReturnStatement() throws YAPLException :
 {}{
   < RETURN > (Expr())?}
 
-void WriteStatement() :
+void WriteStatement() throws YAPLException :
 {}{
   < WRITE > < STRING >}
 
-void Statement() :{}{
+void Statement() throws YAPLException :{}{
   IfStatement() | WhileStatement() | ReturnStatement() | WriteStatement() | LOOKAHEAD(2) Assignment() |
   ProcedureCall() | Block()}
 
-void StatementList():
+void StatementList() throws YAPLException :
 {}
 {
   (Statement() ";")*}
 
-void Block() :
+void Block() throws YAPLException :
 {}
 {
   {
@@ -210,7 +224,7 @@ void FormalParamList() :
 {}{
   FormalParam() (";" FormalParam())*}
 
-void Procedure() :
+void Procedure() throws YAPLException :
 {}
 {
   {
