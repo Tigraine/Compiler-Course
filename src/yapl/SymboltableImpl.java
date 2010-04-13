@@ -3,6 +3,7 @@ package yapl;
 import java.util.Hashtable;
 import yapl.interfaces.Symbol;
 import yapl.interfaces.Symboltable;
+import yapl.interfaces.Symbol.SymbolKind;
 import yapl.lib.YAPLException;
 import yapl.util.ConsoleLogger;
 import yapl.util.Logger;
@@ -27,8 +28,8 @@ public class SymboltableImpl implements Symboltable {
 	}
 
 	@Override
-	public Symbol getNearestParentSymbol(int kind) {
-		Symbol nearestParentSymbol = currentScope.getNearestParentSymbol();
+	public Symbol getNearestParentSymbol(SymbolKind kind) {
+		Symbol nearestParentSymbol = currentScope.getNearestParentSymbol(kind);
 		logger.log("Looking up parent symbol, returning %s", nearestParentSymbol.getName());
 		return nearestParentSymbol;
 	}

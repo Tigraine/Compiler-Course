@@ -6,6 +6,7 @@ import yapl.Scope;
 import yapl.SymbolImpl;
 import yapl.SymboltableImpl;
 import yapl.interfaces.Symbol;
+import yapl.interfaces.Symbol.SymbolKind;
 import yapl.lib.YAPLException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -99,7 +100,7 @@ public class ScopeTests extends TestCase {
 	
 		scope.setParentSymbol(symbol);
 		
-		Symbol nearestParentSymbol = scope.getNearestParentSymbol();
+		Symbol nearestParentSymbol = scope.getNearestParentSymbol(SymbolKind.Variable);
 		
 		Assert.assertEquals(symbol, nearestParentSymbol);
 	}
@@ -116,7 +117,7 @@ public class ScopeTests extends TestCase {
 		SymbolImpl symbol = getSampleSymbol();
 		scope.setParentSymbol(symbol);
 		
-		Symbol nearestParentSymbol = scope2.getNearestParentSymbol();
+		Symbol nearestParentSymbol = scope2.getNearestParentSymbol(SymbolKind.Variable);
 		
 		Assert.assertEquals(symbol, nearestParentSymbol);
 	}

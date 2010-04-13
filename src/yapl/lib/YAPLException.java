@@ -1,3 +1,5 @@
+package yapl.lib;
+
 import yapl.interfaces.CompilerError;
 
 public class YAPLException extends Exception implements CompilerError {

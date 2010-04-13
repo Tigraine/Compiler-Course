@@ -3,6 +3,7 @@ package yapl;
 import java.util.Hashtable;
 
 import yapl.interfaces.Symbol;
+import yapl.interfaces.Symbol.SymbolKind;
 import yapl.lib.YAPLException;
 
 public class Scope {
@@ -41,8 +42,8 @@ public class Scope {
 	public void setParentSymbol(Symbol parentSymbol) {
 		this.parentSymbol = parentSymbol;
 	}
-	public Symbol getNearestParentSymbol() {
-		if (parentSymbol == null && parent != null) return parent.getNearestParentSymbol();
+	public Symbol getNearestParentSymbol(SymbolKind kind) {
+		if (parentSymbol == null && parent != null) return parent.getNearestParentSymbol(kind);
 		return parentSymbol;
 	}
 }
