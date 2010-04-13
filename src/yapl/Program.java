@@ -18,11 +18,18 @@ package yapl;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringReader;
 
 import yapl.interfaces.CompilerError;
 import yapl.lib.CompilerMessage;
 
 public class Program {
+	private static final String PREDEFINED_PROCEDURES = 
+			"Procedure writeint(i: Integer);" +
+			"Procedure writebool(b: Boolean);" +
+			"Procedure writeln();" +
+			"Procedure readint(): Integer;";
+
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			writeUsage();
@@ -31,7 +38,8 @@ public class Program {
 		String programName = args[0];
 		try {
 		    FileInputStream fis = new FileInputStream(programName);
-		    yapl parser = new yapl(fis);
+		    yapl parser = new yapl(new StringReader(PREDEFINED_PROCEDURES));
+		    parser.ReInit(fis);
 		    parser.Start();
 		    CompilerMessage.printOK(programName);
 		} catch (ParseException e) {
