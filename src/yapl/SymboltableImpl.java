@@ -1,21 +1,24 @@
 package yapl;
 
+import java.util.Hashtable;
+
 import yapl.interfaces.Symbol;
 import yapl.interfaces.Symboltable;
 import yapl.lib.YAPLException;
 
 public class SymboltableImpl implements Symboltable {
 
+	private Scope currentScope = new Scope();
+	
 	@Override
-	public void addSymbol(Symbol s) throws YAPLException {
-		// TODO Auto-generated method stub
-
+	public void addSymbol(Symbol symbol) throws YAPLException {
+		if (symbol.getName() == null) throw new YAPLException("Symbol name is null");
+		currentScope.addSymbol(symbol);
 	}
 
 	@Override
 	public void closeScope() {
-		// TODO Auto-generated method stub
-
+		currentScope = currentScope.getParent();
 	}
 
 	@Override
@@ -26,14 +29,14 @@ public class SymboltableImpl implements Symboltable {
 
 	@Override
 	public Symbol lookup(String name) throws YAPLException {
-		// TODO Auto-generated method stub
-		return null;
+		if (name == null) throw new YAPLException("Symbol name is null");
+		return currentScope.getSymbol(name);
 	}
 
 	@Override
 	public void openScope(boolean isGlobal) {
-		// TODO Auto-generated method stub
-
+		Scope scope = new Scope(currentScope);
+		currentScope = scope;
 	}
 
 	@Override

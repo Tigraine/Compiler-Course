@@ -12,7 +12,13 @@ public class SymbolImpl implements Symbol {
 	private int offset;
 	private Symbol nextSymbol;
 	private boolean isGlobal;
+	private String name;
 
+	public SymbolImpl(String name, Symbol.SymbolKind kind) {
+		this.name = name;
+		setKind(kind);
+	}
+	
 	@Override
 	public Symbol.SymbolKind getKind() {
 		return kind;
@@ -25,7 +31,7 @@ public class SymbolImpl implements Symbol {
 
 	@Override
 	public String getName() {
-		throw new UnsupportedOperationException("Not implemented yet");
+		return name;
 	}
 
 	@Override
