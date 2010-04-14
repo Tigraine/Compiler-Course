@@ -93,7 +93,6 @@ void PredefProc() throws YAPLException :
 {
   < PROCEDURE > t = < IDENT >
   {
-    System.out.println("Added predef proc " + t.image);
     Symbol symbol = new SymbolImpl(t.image, Symbol.SymbolKind.Procedure);
     symbolTable.addSymbol(symbol);
     symbolTable.openScope(true);
@@ -304,7 +303,7 @@ void Program() throws YAPLException :
 
 void Start() throws YAPLException :{  Token t;}{
   {
-    symbolTable.setDebug(true);  }
+    symbolTable.setDebug(false);  }
   (    Program()
   )*
   <EOF>}
