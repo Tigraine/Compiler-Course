@@ -16,6 +16,7 @@
 ***/
 options {
   JDK_VERSION = "1.5";
+  static = false;
 }
 PARSER_BEGIN(yapl)
 package yapl;
@@ -23,7 +24,10 @@ import yapl.interfaces.*;
 import yapl.lib.*;
 import java.util.*;
 public class yapl {
-  private static Symboltable symbolTable = new SymboltableImpl();
+  private Symboltable symbolTable = new SymboltableImpl();
+
+  public void clear()  {  	symbolTable = new SymboltableImpl();
+  }
 }
 PARSER_END(yapl)
 
