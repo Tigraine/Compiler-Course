@@ -40,6 +40,7 @@ public class Program {
 		try {
 		    FileInputStream fis = new FileInputStream(programName);
 		    yapl parser = new yapl(new StringReader(PREDEFINED_PROCEDURES));
+		    parser.PredefinedProcedures();
 		    parser.ReInit(fis);
 		    
 		    parser.Start();

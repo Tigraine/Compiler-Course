@@ -77,6 +77,27 @@ TOKEN :
 	< NUMBER: (< DIGIT >)+ > |
 	< STRING: "\"" ( " " | < LETTER > | < DIGIT > | < OTHERCHAR > )* "\"" > 
 }
+
+void PredefinedProcedures() throws YAPLException :
+{}
+{
+  PredefProc()}
+void PredefProc() throws YAPLException :
+{
+  Token t;
+}
+{
+  < PROCEDURE > t = < IDENT >
+  {
+    Symbol symbol = new SymbolImpl(t.image, Symbol.SymbolKind.Procedure);
+    symbolTable.addSymbol(symbol);
+    symbolTable.openScope(false);
+  } "(" (FormalParamList())? ")"
+  (":" Type())? ";"
+  {
+    symbolTable.closeScope();
+  }}
+
 void Type() throws YAPLException :
 {}{
   < PrimType > ( "[" "]")*}
