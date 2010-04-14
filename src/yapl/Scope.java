@@ -22,7 +22,7 @@ public class Scope {
 		String symbolName = symbol.getName();
 		if (symbols.containsKey(symbolName)) {
 			Symbol foundSymbol = getSymbol(symbolName);
-			throw new YAPLException(String.format("symbol %s already declared in current scope (as %s)", symbolName, foundSymbol.getKindString()));
+			throw new SymbolAlreadyDefinedException(foundSymbol);
 		}
 		symbols.put(symbolName, symbol);
 		symbol.setGlobal(parent == null);
@@ -32,7 +32,7 @@ public class Scope {
 		if (symbols.containsKey(name)) {
 			return symbols.get(name);
 		}
-		if (parent == null) throw new YAPLException(String.format("Symbol %s not defined", name));
+		if (parent == null) throw new IdentifierNotDeclaredException(name);
 		return parent.getSymbol(name);
 	}
 	public Scope getParent() {

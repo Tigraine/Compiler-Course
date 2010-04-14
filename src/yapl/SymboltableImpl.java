@@ -17,7 +17,7 @@ public class SymboltableImpl implements Symboltable {
 	@Override
 	public void addSymbol(Symbol symbol) throws YAPLException {
 		logger.log("Adding Symbol %s", symbol.getName());
-		if (symbol.getName() == null) throw new YAPLException("Symbol name is null");
+		if (symbol.getName() == null) throw new SymbolNameNullException();
 		currentScope.addSymbol(symbol);
 	}
 
@@ -36,7 +36,7 @@ public class SymboltableImpl implements Symboltable {
 
 	@Override
 	public Symbol lookup(String name) throws YAPLException {
-		if (name == null) throw new YAPLException("Symbol name is null");
+		if (name == null) throw new SymbolNameNullException();
 		logger.log("Looking up %s", name);
 		return currentScope.getSymbol(name);
 	}

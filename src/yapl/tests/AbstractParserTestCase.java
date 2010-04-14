@@ -9,6 +9,7 @@ import yapl.Program;
 import yapl.TokenMgrError;
 import yapl.yapl;
 import yapl.interfaces.CompilerError;
+import yapl.lib.CompilerMessage;
 import yapl.lib.YAPLException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -53,7 +54,7 @@ public abstract class AbstractParserTestCase  extends TestCase{
 			e.printStackTrace();
 			Assert.fail();
 		} catch (YAPLException e) {
-			e.printStackTrace();
+			CompilerMessage.printError(e, "test");
 			Assert.fail();
 		} catch (TokenMgrError e) {
 			e.printStackTrace();
@@ -63,6 +64,7 @@ public abstract class AbstractParserTestCase  extends TestCase{
 	
 	protected void verifyException(CompilerError ex, int errorNumber, int line, int column)
 	{
+		CompilerMessage.printError(ex, "test");
 		assertEquals(errorNumber, ex.errorNumber());
 		assertEquals(line, ex.line());
 		assertEquals(column, ex.column());

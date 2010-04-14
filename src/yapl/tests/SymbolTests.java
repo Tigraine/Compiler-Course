@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 public class SymbolTests extends AbstractParserTestCase {
 	
 	protected String getFolder() {
-		return "symbol";
+		return "symbolcheck";
 	}
 	
 	public void test01() {
