@@ -25,12 +25,13 @@ import yapl.lib.CompilerMessage;
 import yapl.lib.YAPLException;
 
 public class Program {
-	private static final String PREDEFINED_PROCEDURES = 
+	public static final String PREDEFINED_PROCEDURES = 
 			"Procedure writeint(i: Integer);" +
 			"Procedure writebool(b: Boolean);" +
 			"Procedure writeln();" +
 			"Procedure readint(): Integer;";
 
+	private static yapl parser = new yapl(new StringReader(PREDEFINED_PROCEDURES));
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			writeUsage();
@@ -39,8 +40,8 @@ public class Program {
 		String programName = args[0];
 		try {
 		    FileInputStream fis = new FileInputStream(programName);
-		    yapl parser = new yapl(new StringReader(PREDEFINED_PROCEDURES));
 		    parser.clear();
+		    parser.ReInit(new StringReader(PREDEFINED_PROCEDURES));
 		    parser.PredefinedProcedures();
 		    parser.ReInit(fis);
 		    
