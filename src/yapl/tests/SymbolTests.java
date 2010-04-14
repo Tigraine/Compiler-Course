@@ -93,7 +93,7 @@ public class SymbolTests extends AbstractParserTestCase {
 	}
 	
 	public void test20() {
-		runTestExpectingError("test20", CompilerError.EndIdentMismatch, 11, 20);
+		runTestExpectingError("test20", CompilerError.SymbolIllegalUse, 11, 20);
 	}
 	
 	public void test21() {
