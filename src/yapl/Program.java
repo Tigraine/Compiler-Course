@@ -22,6 +22,7 @@ import java.io.StringReader;
 
 import yapl.interfaces.CompilerError;
 import yapl.lib.CompilerMessage;
+import yapl.lib.YAPLException;
 
 public class Program {
 	private static final String PREDEFINED_PROCEDURES = 
@@ -40,8 +41,12 @@ public class Program {
 		    FileInputStream fis = new FileInputStream(programName);
 		    yapl parser = new yapl(new StringReader(PREDEFINED_PROCEDURES));
 		    parser.ReInit(fis);
+		    
 		    parser.Start();
+
 		    CompilerMessage.printOK(programName);
+	    } catch (YAPLException ex) {
+	    	writeError(ex, programName);
 		} catch (ParseException e) {
 			writeError(e, programName);
 		} catch (TokenMgrError e){

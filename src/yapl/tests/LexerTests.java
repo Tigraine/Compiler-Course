@@ -7,10 +7,11 @@ import yapl.ParseException;
 import yapl.TokenMgrError;
 import yapl.yapl;
 import yapl.interfaces.CompilerError;
+import yapl.lib.YAPLException;
 import junit.framework.TestCase;
 
 public class LexerTests extends TestCase {
-	public void testTest01() throws ParseException{
+	public void testTest01() throws ParseException, YAPLException{
 		try {
 		createParser("test01");
 		} catch (ParseException ex) {
@@ -18,7 +19,7 @@ public class LexerTests extends TestCase {
 		}
 	}
 	
-	public void testTest02() throws ParseException{
+	public void testTest02() throws ParseException, YAPLException{
 		try {
 		createParser("test02"); 
 		} catch (TokenMgrError ex) {
@@ -26,11 +27,11 @@ public class LexerTests extends TestCase {
 		}
 	}
 	
-	public void testTest03() throws ParseException{
+	public void testTest03() throws ParseException, YAPLException{
 		createParser("test03");
 	}
 
-	private void createParser(String fileName) throws ParseException {
+	private void createParser(String fileName) throws ParseException, YAPLException {
 		yapl parser;
 		try {
 			parser = new yapl(new FileInputStream("testfiles\\lexer\\" + fileName + ".yapl"));

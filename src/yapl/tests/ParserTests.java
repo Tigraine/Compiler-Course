@@ -7,11 +7,12 @@ import yapl.ParseException;
 import yapl.TokenMgrError;
 import yapl.yapl;
 import yapl.interfaces.CompilerError;
+import yapl.lib.YAPLException;
 import junit.framework.TestCase;
 
 public class ParserTests extends TestCase {
 
-	public void test01() throws ParseException{
+	public void test01() throws ParseException {
 		createParser("test01");
 	}
 	
@@ -124,13 +125,17 @@ public class ParserTests extends TestCase {
 		}
 	}
 	
-	private void createParser(String fileName) throws ParseException {
-		yapl parser;
+	private void createParser(String fileName) throws ParseException{
 		try {
-			parser = new yapl(new FileInputStream("testfiles\\parser\\" + fileName + ".yapl"));
-			parser.Start();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			yapl parser;
+			try {
+				parser = new yapl(new FileInputStream("testfiles\\parser\\" + fileName + ".yapl"));
+				parser.Start();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+		}
+		} catch (YAPLException ex) {
+			
 		}
 	}
 	

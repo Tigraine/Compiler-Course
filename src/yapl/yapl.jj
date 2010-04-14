@@ -77,82 +77,82 @@ TOKEN :
 	< NUMBER: (< DIGIT >)+ > |
 	< STRING: "\"" ( " " | < LETTER > | < DIGIT > | < OTHERCHAR > )* "\"" > 
 }
-void Type() :
+void Type() throws YAPLException :
 {}{
   < PrimType > ( "[" "]")*}
-void Selector() :
+void Selector() throws YAPLException :
 {}
 {
   "[" Expr() "]" (Selector())?}
 
-void ArrayLen() :
+void ArrayLen() throws YAPLException :
 {}{
   "#" < IDENT > (Selector())?}
-void PrimaryExpr() :
+void PrimaryExpr() throws YAPLException :
 {}{
   (< Literal > | "(" Expr() ")" | LOOKAHEAD(2) ProcedureCall() | < IDENT > (Selector())? | ArrayLen())}
-void ProcedureCall() :
+void ProcedureCall() throws YAPLException :
 {}
 {
   < IDENT > "(" (ArgumentList())? ")"}
-void ArgumentList() :
+void ArgumentList() throws YAPLException:
 {}
 {
   Expr() ("," Expr())*}
-void UnaryExpr ():
+void UnaryExpr () throws YAPLException:
 {}
 {
   (AddOp())? PrimaryExpr()    }
-void MulExpr ():
+void MulExpr () throws YAPLException:
 {}
 {
   (UnaryExpr()) (MulOp() UnaryExpr())*    }
-void AddExpr ():
+void AddExpr () throws YAPLException:
 {}
 {
   MulExpr() (AddOp() MulExpr())*}
 
-void RelExpr ():
+void RelExpr () throws YAPLException:
 {}
 {
   AddExpr() (RelOp() AddExpr())*}
 
-void AddOp ():
+void AddOp () throws YAPLException:
 {}
 {
   "+" | "-"}
 
-void MulOp ():
+void MulOp () throws YAPLException:
 {}
 {
   "*" | "/" | "%"}
 
-void RelOp():
+void RelOp() throws YAPLException:
 {}
 {
    "<" | "<=" | ">=" | ">"}
 
-void EqualOp():
+void EqualOp() throws YAPLException :
 {}
 {
     "==" | "!="}
-void EqualExpr ():
+void EqualExpr () throws YAPLException:
 {}
 {
   RelExpr() (EqualOp() RelExpr())*}
 
-void CondAndExpr ():
+void CondAndExpr () throws YAPLException:
 {}
 {
   EqualExpr() (< AND > EqualExpr())*}
-void Expr():
+void Expr() throws YAPLException:
 {}{
   (CondAndExpr() (< OR > CondAndExpr())*) | CreationExpr()}
-void CreationExpr():
+void CreationExpr() throws YAPLException:
 {}{
   < NEW > < PrimType > "[" Expr() "]" ("[" Expr() "]")*}
 
-void ConstDecl() :
+void ConstDecl() throws YAPLException :
 {}{
   < CONST > <IDENT > "=" < Literal > ";"}
 
@@ -177,7 +177,7 @@ void Decl() throws YAPLException :
 {
   < DECLARE > ( ConstDecl() | VarDecl() )*}
 
-void Assignment() :
+void Assignment() throws YAPLException :
 {}{
   < IDENT > (Selector())? ":=" Expr()}
 void IfStatement() throws YAPLException :
@@ -215,12 +215,12 @@ void Block() throws YAPLException :
   {
     symbolTable.closeScope();  }}
 
-void FormalParam() :
+void FormalParam() throws YAPLException :
 {}
 {
   < IDENT > ("," < IDENT >)* ":" (< READONLY >)? Type()}
 
-void FormalParamList() :
+void FormalParamList() throws YAPLException :
 {}{
   FormalParam() (";" FormalParam())*}
 
@@ -234,7 +234,7 @@ void Procedure() throws YAPLException :
   {
     symbolTable.closeScope();  }}
 
-void Program() :
+void Program() throws YAPLException :
 {}
 {
   {
@@ -244,7 +244,7 @@ void Program() :
   {
     symbolTable.closeScope();  }}
 
-void Start() :{  Token t;}{
+void Start() throws YAPLException :{  Token t;}{
   {
     symbolTable.setDebug(true);  }
   (    Program()
