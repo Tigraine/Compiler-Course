@@ -6,7 +6,7 @@ package yapl.interfaces;
  * @author Mario Taschwer
  * @version $Id: Token.java 99 2009-03-23 14:30:37Z mt $
  */
-public interface Token {
+public interface YAPLToken {
 	
 	/**
 	 * Return the token kind, as defined by the JavaCC API.
