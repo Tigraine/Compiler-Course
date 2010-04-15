@@ -165,7 +165,7 @@ public interface CodeGen {
 	 *             (IllegalOp1Type) if the operand type cannot be applied to the
 	 *             given operator.
 	 */
-	public Attrib op1(Token op, Attrib x) 
+	public Attrib op1(YAPLToken op, Attrib x) 
 	throws YAPLException;
 
 	/**
@@ -187,7 +187,7 @@ public interface CodeGen {
 	 *             (IllegalOp2Type) if the operand types cannot be applied to
 	 *             the given operator.
 	 */
-	public Attrib op2(Attrib x, Token op, Attrib y) 
+	public Attrib op2(Attrib x, YAPLToken op, Attrib y) 
 	throws YAPLException;
 
 	/**
@@ -209,7 +209,7 @@ public interface CodeGen {
 	 *             (IllegalRelOpType) if the operand types cannot be applied to
 	 *             the given operator.
 	 */
-	public Attrib relOp(Attrib x, Token op, Attrib y) 
+	public Attrib relOp(Attrib x, YAPLToken op, Attrib y) 
 	throws YAPLException;
 
 	/**
@@ -231,7 +231,7 @@ public interface CodeGen {
 	 *             (IllegalEqualOpType) if the operand types cannot be applied to
 	 *             the given operator.
 	 */
-	public Attrib equalOp(Attrib x, Token op, Attrib y) 
+	public Attrib equalOp(Attrib x, YAPLToken op, Attrib y) 
 	throws YAPLException;
 
 	/**
