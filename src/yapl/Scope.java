@@ -2,6 +2,8 @@ package yapl;
 
 import java.util.Hashtable;
 
+import yapl.exceptions.IdentifierNotDeclaredException;
+import yapl.exceptions.SymbolAlreadyDefinedException;
 import yapl.interfaces.Symbol;
 import yapl.interfaces.Symbol.SymbolKind;
 import yapl.lib.YAPLException;

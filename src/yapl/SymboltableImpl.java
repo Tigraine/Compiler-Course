@@ -1,6 +1,8 @@
 package yapl;
 
 import java.util.Hashtable;
+
+import yapl.exceptions.SymbolNameNullException;
 import yapl.interfaces.Symbol;
 import yapl.interfaces.Symboltable;
 import yapl.interfaces.Symbol.SymbolKind;

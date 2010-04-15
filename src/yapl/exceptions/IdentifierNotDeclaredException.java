@@ -1,5 +1,6 @@
-package yapl;
+package yapl.exceptions;
 
+import yapl.yapl;
 import yapl.lib.YAPLException;
 import yapl.interfaces.CompilerError;
 
