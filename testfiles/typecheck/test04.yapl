@@ -1,0 +1,13 @@
+/* Type check test input.
+ * <expected result> ERROR 25 (line 12, column 12)
+ * non-integer operand types for relational operator <
+ * $Id: test04.yapl 102 2009-04-16 07:59:55Z mt $
+ */
+Program test04
+Declare
+    Const K = 4;
+    b: Boolean;
+Begin
+    b := K > 3;
+    b := K < b;
+End test04.

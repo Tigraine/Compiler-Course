@@ -1,0 +1,68 @@
+/* Quicksort implemented in YAPL.
+ * <expected result> OK
+ *
+ * $Id: test35.yapl 141 2010-03-16 17:17:56Z mt $
+ */
+Program test35
+
+Procedure printArray(a: Readonly Integer[])
+Declare
+    i: Integer;
+Begin
+    i := 0;
+    While i < #a Do
+        writeint(a[i]);
+        Write " ";
+        i := i + 1;
+    EndWhile;
+    writeln();
+End printArray;
+
+Procedure init(a: Integer[])
+Declare
+    i, j, k: Integer;
+Begin
+    i := 0; j := 20; k := -1;
+    While i < #a Do
+        a[i] := i + j;
+        i := i + 1;
+        j := ((j + 30) % 64) * k;
+        k := -k;
+    EndWhile;
+End init;
+
+Procedure quicksort(a: Integer[]; left, right: Integer)
+Declare
+    i, j, x, w, middle: Integer;
+Begin
+    /* partitioning */
+    i := left; j := right;
+    middle := (left + right) / 2;
+    x := a[middle]; /* pivot element */
+    While i <= j Do
+        While a[i] < x Do i := i+1; EndWhile;
+        While a[j] > x Do j := j-1; EndWhile;
+        If i <= j Then
+            /* swap a[i] and a[j] */
+            w := a[i]; a[i] := a[j]; a[j] := w;
+            i := i+1; j := j-1;
+        EndIf;
+    EndWhile;
+    /* recursion */
+    If left < j Then quicksort(a, left, j); EndIf;
+    If i < right Then quicksort(a, i, right); EndIf;
+End quicksort;
+
+Declare
+    Const ARRAYLEN = 10;
+    a: Integer[];
+Begin
+    a := new Integer[ARRAYLEN];
+    init(a);
+    Write "Input Array: ";
+    printArray(a);
+    writeln();
+    quicksort(a, 0, ARRAYLEN-1);
+    Write "Sorted Array: ";
+    printArray(a);
+End test35.

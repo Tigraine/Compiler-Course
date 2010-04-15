@@ -1,0 +1,11 @@
+/* Type check test input.
+ * <expected result> ERROR 23 (line 10, column 10)
+ * illegal operand type for unary operator -
+ * $Id: test01.yapl 102 2009-04-16 07:59:55Z mt $
+ */
+Program test01
+Declare
+    k: Integer;
+Begin
+    k := -True;
+End test01.

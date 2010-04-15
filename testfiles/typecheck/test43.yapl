@@ -1,0 +1,24 @@
+/* Type check test input.
+ * <expected result> ERROR 29 (line 23, column 7)
+ * type mismatch in assignment
+ * $Id: test43.yapl 141 2010-03-16 17:17:56Z mt $
+ */
+Program test43
+
+Procedure add(m1, m2: Integer[][]): Integer[][]
+Declare
+    m: Integer[][];
+Begin
+    m := new Integer[#m1][#m1[0]];
+    m[0][0] := m1[0][0] + m2[0][0];
+    Return m;
+End add;
+
+Declare
+    Const len = 100;
+    n: Integer;
+    m: Integer[][];
+Begin
+    m := new Integer[len][len+1];
+    n := add(m, m); 
+End test43.

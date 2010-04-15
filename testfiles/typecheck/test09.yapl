@@ -1,0 +1,14 @@
+/* Type check test input.
+ * <expected result> ERROR 21 (line 13, column 30)
+ * array index or dimension is not an integer type
+ * $Id: test09.yapl 102 2009-04-16 07:59:55Z mt $
+ */
+Program test09
+Declare
+    Const size = 10;
+    a: Integer[];
+    b: Boolean[];
+Begin
+    a := new Integer[size+1];
+    b := new Boolean[size > 0];
+End test09.

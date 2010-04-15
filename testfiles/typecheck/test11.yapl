@@ -1,0 +1,12 @@
+/* Type check test input.
+ * <expected result> ERROR 29 (line 11, column 7)
+ * type mismatch in assignment
+ * $Id: test11.yapl 141 2010-03-16 17:17:56Z mt $
+ */
+Program test11
+Declare
+    k, m, n: Integer;
+Begin
+    k := (-m * 3 + 1) % 13;
+    n := k != 0;
+End test11.

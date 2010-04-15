@@ -1,0 +1,13 @@
+/* Type check test input.
+ * <expected result> ERROR 29 (line 12, column 9)
+ * type mismatch in assignment
+ * $Id: test42.yapl 141 2010-03-16 17:17:56Z mt $
+ */
+Program test42
+Declare
+    Const len = 100;
+    n: Integer;
+    arr: Integer[][];
+Begin
+    arr := new Integer[len][len][n+2];
+End test42.

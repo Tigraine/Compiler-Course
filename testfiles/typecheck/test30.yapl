@@ -1,0 +1,19 @@
+/* Type check test input.
+ * <expected result> ERROR 35 (line 16, column 1)
+ * missing Return statement in function proc2
+ * $Id: test30.yapl 141 2010-03-16 17:17:56Z mt $
+ */
+Program test30
+
+Procedure proc1(m: Integer): Integer
+Begin
+    Return m % 31;
+End proc1;
+
+Procedure proc2(m: Integer): Integer
+Begin
+    writeint(m);
+End proc2;
+
+Begin
+End test30.

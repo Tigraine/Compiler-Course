@@ -1,0 +1,13 @@
+/* Type check test input.
+ * <expected result> ERROR 24 (line 12, column 37)
+ * illegal operand types for binary operator Or
+ * $Id: test15.yapl 102 2009-04-16 07:59:55Z mt $
+ */
+Program test15
+Declare
+    Const len = 100;
+    b: Boolean;
+    k, n: Integer;
+Begin
+    b := ((k == n-2) And len < 100) Or n / len;
+End test15.

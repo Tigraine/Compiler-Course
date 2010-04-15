@@ -5,7 +5,7 @@ package yapl.interfaces;
  * thrown by the YAPL compiler.
  * 
  * @author Mario Taschwer
- * @version $Id: CompilerError.java 137 2010-03-10 20:34:28Z mt $
+ * @version $Id: CompilerError.java 141 2010-03-16 17:17:56Z mt $
  */
 public interface CompilerError {
 
@@ -47,22 +47,28 @@ public interface CompilerError {
 	public static final int IllegalEqualOpType   = 26;
 	/** Using procedure (not a function) in expression. */
 	public static final int ProcNotFuncExpr      = 27;
+	/** Read-only l-value in assignment. */
+	public static final int ReadonlyAssign       = 28;
 	/** Type mismatch in assignment. */
-	public static final int TypeMismatchAssign   = 28;
+	public static final int TypeMismatchAssign   = 29;
 	/** Argument not applicable to procedure. */
-	public static final int ArgNotApplicable     = 29;
+	public static final int ArgNotApplicable     = 30;
+	/** Read-only argument passed to read-write procedure. */
+	public static final int ReadonlyArg          = 31;
 	/** Too few arguments for procedure. */
-	public static final int TooFewArgs           = 30;
+	public static final int TooFewArgs           = 32;
 	/** Condition is not a boolean expression. */
-	public static final int CondNotBool          = 31;
+	public static final int CondNotBool          = 33;
+	/** Readonly not followed by array type. */
+	public static final int ReadonlyNotArray     = 34; 
 	/** Missing return statement in function. */
-	public static final int MissingReturn        = 32;
+	public static final int MissingReturn        = 35;
 	/** Returning none or invalid type from function. */
-	public static final int InvalidReturnType    = 33;
+	public static final int InvalidReturnType    = 36;
 	/** Illegal return value in procedure (not a function). */
-	public static final int IllegalRetValProc    = 34;
+	public static final int IllegalRetValProc    = 37;
 	/** Illegal return value in main program. */
-	public static final int IllegalRetValMain    = 35;
+	public static final int IllegalRetValMain    = 38;
 
 	/* Code generation errors */
 	

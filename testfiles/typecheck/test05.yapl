@@ -1,0 +1,12 @@
+/* Type check test input.
+ * <expected result> ERROR 26 (line 11, column 12)
+ * illegal operand types for equality operator !=
+ * $Id: test05.yapl 102 2009-04-16 07:59:55Z mt $
+ */
+Program test05
+Declare
+    b: Boolean;
+Begin
+    b := (1 == 2 Or True == False);
+    b := b != 0;
+End test05.

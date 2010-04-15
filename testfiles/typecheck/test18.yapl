@@ -1,0 +1,16 @@
+/* Type check test input.
+ * <expected result> ERROR 27 (line 15, column 14)
+ * using procedure proc (not a function) in expression
+ * $Id: test18.yapl 102 2009-04-16 07:59:55Z mt $
+ */
+Program test18
+
+Procedure proc(n: Integer)
+Begin
+    writeint(n);
+End proc;
+
+Begin
+    proc(readint());
+    writeint(proc(10));
+End test18.

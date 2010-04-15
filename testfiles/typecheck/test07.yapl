@@ -1,0 +1,13 @@
+/* Type check test input.
+ * <expected result> ERROR 20 (line 12, column 11)
+ * expression before '[' is not an array type
+ * $Id: test07.yapl 102 2009-04-16 07:59:55Z mt $
+ */
+Program test07
+Declare
+    k: Integer;
+    a: Integer[];
+Begin
+    k := a[0];
+    k := k[0];
+End test07.

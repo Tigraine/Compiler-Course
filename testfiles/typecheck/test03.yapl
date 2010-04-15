@@ -1,0 +1,12 @@
+/* Type check test input.
+ * <expected result> ERROR 24 (line 11, column 12)
+ * illegal operand types for binary operator %
+ * $Id: test03.yapl 102 2009-04-16 07:59:55Z mt $
+ */
+Program test03
+Declare
+    Const b = False;
+    k: Integer;
+Begin
+    k := b % 11;
+End test03.

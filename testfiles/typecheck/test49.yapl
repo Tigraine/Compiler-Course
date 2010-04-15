@@ -1,0 +1,25 @@
+/* Type check test input.
+ * <expected result> ERROR 31 (line 21, column 15)
+ * read-only argument #1 passed to read-write procedure normalize
+ * $Id: test49.yapl 141 2010-03-16 17:17:56Z mt $
+ */
+Program test49
+
+Procedure print(m: Readonly Integer[][])
+Begin
+End print;
+
+Procedure normalize(m: Integer[][])
+Begin
+End normalize;
+
+Procedure proc(m1: Integer[][]; m2: Readonly Integer[][])
+Begin
+    print(m1);
+    print(m2);
+    normalize(m1);
+    normalize(m2);
+End proc;
+
+Begin
+End test49.

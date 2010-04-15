@@ -1,0 +1,12 @@
+/* Type check test input.
+ * <expected result> ERROR 25 (line 11, column 15)
+ * non-integer operand types for relational operator <=
+ * $Id: test36.yapl 104 2009-04-20 07:49:38Z mt $
+ */
+Program test36
+Declare
+    b, c: Boolean;
+    n: Integer;
+Begin    
+    If n + 10 <= (b Or c) Then EndIf;
+End test36.

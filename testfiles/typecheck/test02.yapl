@@ -1,0 +1,11 @@
+/* Type check test input.
+ * <expected result> ERROR 24 (line 10, column 12)
+ * illegal operand types for binary operator +
+ * $Id: test02.yapl 102 2009-04-16 07:59:55Z mt $
+ */
+Program test02
+Declare
+    k: Integer;
+Begin
+    k := 1 + True;
+End test02.

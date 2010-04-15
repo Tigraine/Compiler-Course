@@ -1,0 +1,12 @@
+/* Type check test input.
+ * <expected result> ERROR 29 (line 11, column 7)
+ * type mismatch in assignment
+ * $Id: test14.yapl 141 2010-03-16 17:17:56Z mt $
+ */
+Program test14
+Declare
+    a, b: Boolean[];
+Begin
+    a := b;
+    b := a[#a-1];
+End test14.
