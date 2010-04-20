@@ -22,44 +22,42 @@ import yapl.lib.Type;
  * @version $Id: Attrib.java 141 2010-03-16 17:17:56Z mt $
  */
 public interface Attrib {
-	/** Invalid operand. */
-	public static final byte None = 0;
-	
-	/** Register or stack operand. Requires a data type and 
-	 * (optionally) a register number. 
-	 */
-	public static final byte Register  = 1;
-	
-	/** Constant operand. Requires a data type. */
-	public static final byte Constant  = 2;
-	
-	/** Memory operand. 
-	 * Requires a data type and a memory address.
-	 * The address points to a memory location storing the target object
-	 * of the given data type.
-	 */
-	public static final byte Address   = 3;
-	
-	/**
-	 * Array element. This Attrib object holds the array base address,
-	 * but the data type is set to the element type!
-	 * The associated index operand is set using {@link #setOffsetAttrib(Attrib)}.
-	 * Both the base address and the index are held in registers.
-	 */
-	public static final byte ArrayElement = 4;
+	public enum AttribKind {
+		/** Invalid operand. */
+		None,
+		/** Register or stack operand. Requires a data type and 
+		 * (optionally) a register number. 
+		 */
+		Register,
+		/** Constant operand. Requires a data type. */
+		Constant,
+		/** Memory operand. 
+		 * Requires a data type and a memory address.
+		 * The address points to a memory location storing the target object
+		 * of the given data type.
+		 */
+		Address,
+		/**
+		 * Array element. This Attrib object holds the array base address,
+		 * but the data type is set to the element type!
+		 * The associated index operand is set using {@link #setOffsetAttrib(Attrib)}.
+		 * Both the base address and the index are held in registers.
+		 */
+		ArrayElement
+	}
 	
 	/** Return the kind of operand represented by this object.
 	 * 
 	 * @return one of the constants defined by this interface.
 	 */
-	public byte getKind();
+	public AttribKind getKind();
 	
 	/**
 	 * Set the kind of operand represented by this object.
 	 * 
 	 * @param kind     one of the constants defined by this interface.
 	 */
-	public void setKind(byte kind);
+	public void setKind(AttribKind kind);
 	
 	/** Get the data type of this operand (or its target object). */
 	public Type getType();
