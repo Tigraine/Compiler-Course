@@ -2,6 +2,7 @@ package yapl.lib;
 
 import yapl.Token;
 import yapl.interfaces.CompilerError;
+import yapl.interfaces.YAPLToken;
 
 public abstract class YAPLException extends Exception implements CompilerError {
 
@@ -31,8 +32,8 @@ public abstract class YAPLException extends Exception implements CompilerError {
 	}
 	
 	protected void setTokenInfo(Token t) {
-		line = t.beginLine;
-		column = t.beginColumn;
+		line = t.line();
+		column = t.column();
 	}
 
 }

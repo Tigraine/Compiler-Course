@@ -155,23 +155,36 @@ void ArgumentList() throws YAPLException:
 {}
 {
   Expr() ("," Expr())*}
-void UnaryExpr () throws YAPLException:
+Attrib UnaryExpr () throws YAPLException:
 {
-  Token t;
+  Token t = null;
   Attrib op;
 }
 {
   (t = AddOp())? op = PrimaryExpr()
   {
-    codeGen.op1(t, op);  }    }
-void MulExpr () throws YAPLException:
-{}
+    return codeGen.op1(t, op);  }    }
+Attrib MulExpr () throws YAPLException:
 {
-  (UnaryExpr()) (MulOp() UnaryExpr())*    }
-void AddExpr () throws YAPLException:
-{}
+  Attrib retVal;
+  Token t;
+  Attrib op2;}
 {
-  MulExpr() (AddOp() MulExpr())*}
+  (retVal = UnaryExpr()) (t = MulOp() op2 = UnaryExpr()
+  {
+    codeGen.op2(retVal, t, op2);  })*
+  {
+    return retVal;  }    }
+Attrib AddExpr () throws YAPLException:
+{
+  Attrib retVal;
+  Token t;
+  Attrib op2;}
+{
+  retVal = MulExpr() (t = AddOp() op2 = MulExpr()  {
+    retVal = codeGen.op2(retVal, t, op2);  })*
+  {
+    return retVal;   }}
 
 void RelExpr () throws YAPLException:
 {}
@@ -187,15 +200,20 @@ Token AddOp () throws YAPLException:
   {
     return t;  }}
 
-void MulOp () throws YAPLException:
-{}
+Token MulOp () throws YAPLException:
 {
-  "*" | "/" | "%"}
+  Token t;}
+{
+  (t = "*" | t = "/" | t = "%")
+  {
+    return t;  }}
 
-void RelOp() throws YAPLException:
-{}
+Token RelOp() throws YAPLException:
+{Token t;}
 {
-   "<" | "<=" | ">=" | ">"}
+   (t = "<" | t = "<=" | t = ">=" | t = ">")
+   {
+     return t;   }}
 
 void EqualOp() throws YAPLException :
 {}

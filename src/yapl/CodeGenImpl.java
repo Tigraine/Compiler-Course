@@ -1,11 +1,13 @@
 package yapl;
 
+import yapl.exceptions.*;
 import yapl.interfaces.Attrib;
 import yapl.interfaces.CodeGen;
 import yapl.interfaces.Symbol;
 import yapl.interfaces.YAPLToken;
 import yapl.lib.ArrayType;
 import yapl.lib.YAPLException;
+import yapl.types.IntegerType;
 
 public class CodeGenImpl implements CodeGen {
 
@@ -65,7 +67,7 @@ public class CodeGenImpl implements CodeGen {
 	}
 
 	@Override
-	public Attrib equalOp(Attrib x, YAPLToken op, Attrib y)
+	public Attrib equalOp(Attrib x, Token op, Attrib y)
 			throws YAPLException {
 		// TODO Auto-generated method stub
 		return null;
@@ -102,19 +104,25 @@ public class CodeGenImpl implements CodeGen {
 	}
 
 	@Override
-	public Attrib op1(YAPLToken op, Attrib x) throws YAPLException {
-		// TODO Auto-generated method stub
-		return null;
+	public Attrib op1(Token op, Attrib x) throws YAPLException {
+		if (op != null)
+		{
+			if (!(x.getType() instanceof IntegerType))
+				throw new IllegalOp1Type(op);
+		}
+		return x;
 	}
 
 	@Override
-	public Attrib op2(Attrib x, YAPLToken op, Attrib y) throws YAPLException {
-		// TODO Auto-generated method stub
-		return null;
+	public Attrib op2(Attrib x, Token op, Attrib y) throws YAPLException {
+		if (x.getType() instanceof IntegerType && x.getType() instanceof IntegerType) {
+			return x;
+		}
+		throw new IllegalOp2Type(op);
 	}
 
 	@Override
-	public Attrib relOp(Attrib x, YAPLToken op, Attrib y) throws YAPLException {
+	public Attrib relOp(Attrib x, Token op, Attrib y) throws YAPLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
