@@ -23,11 +23,15 @@ package yapl;
 import yapl.interfaces.*;
 import yapl.lib.*;
 import java.util.*;
+import yapl.exceptions.*;
 import yapl.interfaces.Symbol.SymbolKind;
+import yapl.types.*;
 public class yapl {
   private static Symboltable symbolTable = new SymboltableImpl();
+  private static CodeGen codeGen = new CodeGenImpl();
 
   public void clear()  {  	symbolTable = new SymboltableImpl();
+  	codeGen = new CodeGenImpl();
   }
 }
 PARSER_END(yapl)
@@ -76,11 +80,23 @@ TOKEN :
 	< WRITE : "Write" > |
 	< READONLY : "Readonly" > |
 	< PROCEDURE : "Procedure" > |
-  	< Literal: "True" | "False" | < NUMBER > > |
+	< TRUE : "True" > |
+	< FALSE : "False" > |
   	< PrimType : "Integer" | "Boolean" > |	< IDENT : < LETTER > (< LETTER > | < DIGIT >)* > |
 	< NUMBER: (< DIGIT >)+ > |
 	< STRING: "\"" ( " " | < LETTER > | < DIGIT > | < OTHERCHAR > )* "\"" > 
 }
+
+Type Literal() throws YAPLException :
+{
+  Type t;}
+{
+  < TRUE >  {
+    return new BooleanType();  } | < FALSE >
+  {
+    return new BooleanType();  } | < NUMBER >
+  {
+    return new IntegerType();  }}
 
 void PredefinedProcedures() throws YAPLException :
 {}
@@ -116,11 +132,14 @@ void ArrayLen() throws YAPLException :
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() != SymbolKind.Variable && symbol.getKind() != SymbolKind.Parameter)
     	throw new SymbolIllegalUseException(symbol);  } (Selector())?}
-void PrimaryExpr() throws YAPLException :
+Attrib PrimaryExpr() throws YAPLException :
 {
   Token t;
+  Attrib retVal;
+  Type type;
 }{
-  (< Literal > | "(" Expr() ")" | LOOKAHEAD(2) ProcedureCall() | t = < IDENT >
+  (type = Literal()  {
+    return new AttribImpl(type);  } | "(" Expr() ")" | LOOKAHEAD(2) ProcedureCall() | t = < IDENT >
   {
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() == SymbolKind.Procedure)    	throw new SymbolIllegalUseException(symbol);  } (Selector())? | ArrayLen())}
@@ -137,9 +156,14 @@ void ArgumentList() throws YAPLException:
 {
   Expr() ("," Expr())*}
 void UnaryExpr () throws YAPLException:
-{}
 {
-  (AddOp())? PrimaryExpr()    }
+  Token t;
+  Attrib op;
+}
+{
+  (t = AddOp())? op = PrimaryExpr()
+  {
+    codeGen.op1(t, op);  }    }
 void MulExpr () throws YAPLException:
 {}
 {
@@ -154,10 +178,14 @@ void RelExpr () throws YAPLException:
 {
   AddExpr() (RelOp() AddExpr())*}
 
-void AddOp () throws YAPLException:
-{}
+Token AddOp () throws YAPLException:
 {
-  "+" | "-"}
+  Token t;
+}
+{
+  (t = "+" | t = "-")
+  {
+    return t;  }}
 
 void MulOp () throws YAPLException:
 {}
@@ -193,7 +221,7 @@ void ConstDecl() throws YAPLException :
 { Token t; }{
   < CONST > t = <IDENT >
   {
-    symbolTable.addSymbol(new SymbolImpl(t.image, SymbolKind.Constant));  } "=" < Literal > ";"}
+    symbolTable.addSymbol(new SymbolImpl(t.image, SymbolKind.Constant));  } "=" Literal() ";"}
 
 void VarDecl() throws YAPLException :
 {

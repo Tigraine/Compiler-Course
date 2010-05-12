@@ -13,6 +13,10 @@ public class AttribImpl implements Attrib {
 	private byte register;
 	private Type type;
 
+	public AttribImpl(Type type) {
+		this.type = type;
+	}
+	
 	@Override
 	public AttribKind getKind() {
 		return kind;
