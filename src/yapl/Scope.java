@@ -46,6 +46,8 @@ public class Scope {
 	}
 	public Symbol getNearestParentSymbol(SymbolKind kind) {
 		if (parentSymbol == null && parent != null) return parent.getNearestParentSymbol(kind);
-		return parentSymbol;
+		if (parentSymbol != null && parentSymbol.getKind() == kind) return parentSymbol;
+		if (parent == null) return null;
+		return parent.getNearestParentSymbol(kind);
 	}
 }

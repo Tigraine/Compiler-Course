@@ -155,12 +155,12 @@ Attrib retVal; }{
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() != SymbolKind.Variable && symbol.getKind() != SymbolKind.Parameter)
     	throw new SymbolIllegalUseException(symbol);
-    //This is probably a bug
-    if (!(symbol.getType() instanceof ArrayType))
-    {
-      throw new ArrayLenNotArrayException(errorToken);    }
     retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal))?
   {
+    if (!(retVal.getType() instanceof ArrayType))
+    {
+      throw new ArrayLenNotArrayException(errorToken);
+    }
     return new AttribImpl(new IntegerType());  }}
 Attrib PrimaryExpr() throws YAPLException :
 {
@@ -403,10 +403,23 @@ void WhileStatement() throws YAPLException :
       	throw new CondNotBoolException(token);  } < DO > StatementList() < ENDWHILE >}
 
 void ReturnStatement() throws YAPLException :
-{}{
-  < RETURN > (Expr())?
+{
+  Attrib a;
+  Symbol s = symbolTable.getNearestParentSymbol(SymbolKind.Procedure);
+  boolean returnedValue = false;
+}{
+  < RETURN > (a = Expr()  {
+    returnedValue = true;
+    if (s == null)
+      throw new IllegalRetValMainException(token);
+    if (s.getType() == null)
+    	throw new IllegalRetValProcException(s, token);
+    if (!s.getType().isCompatible(a.getType()))
+    	throw new InvalidReturnTypeException(s, token);   })?
   {
-    Symbol s = symbolTable.getNearestParentSymbol(SymbolKind.Procedure);
+    if (s == null) return;
+    if (s.getType() != null && !returnedValue)
+    	throw new InvalidReturnTypeException(s, token); 
     s.setReturnSeen(true);  }}
 
 void WriteStatement() throws YAPLException :

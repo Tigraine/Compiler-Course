@@ -32,7 +32,8 @@ public class SymboltableImpl implements Symboltable {
 	@Override
 	public Symbol getNearestParentSymbol(SymbolKind kind) {
 		Symbol nearestParentSymbol = currentScope.getNearestParentSymbol(kind);
-		logger.log("Looking up parent symbol, returning %s", nearestParentSymbol.getName());
+		if (nearestParentSymbol != null)
+			logger.log("Looking up parent symbol, returning %s", nearestParentSymbol.getName());
 		return nearestParentSymbol;
 	}
 
