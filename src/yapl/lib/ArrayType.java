@@ -14,4 +14,10 @@ public class ArrayType extends Type {
 	public ArrayType(Type elementType) {
 		this.elementType = elementType;
 	}
+	
+	@Override 
+	public void setReadonly(boolean readOnly) {
+		elementType.setReadonly(readOnly);
+		super.setReadonly(readOnly);
+	}
 }

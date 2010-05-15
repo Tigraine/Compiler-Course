@@ -206,10 +206,14 @@ int ArgumentList(Symbol s) throws YAPLException:
   arg = Expr()
   {
     if ((parameters.size() < argumentCount) || (!parameters.get(argumentCount-1).getType().isCompatible(arg.getType())))
-    	throw new ArgNotApplicableException(argumentCount, s, token);  } ("," arg = Expr()  {
+    	throw new ArgNotApplicableException(argumentCount, s, token);
+	if (arg.getType().isReadonly() && !parameters.get(argumentCount-1).getType().isReadonly())
+		throw new ReadonlyArgException(argumentCount, s, token);      } ("," arg = Expr()  {
     argumentCount++;
     if ((parameters.size() < argumentCount) || (!parameters.get(argumentCount-1).getType().isCompatible(arg.getType())))
-    	throw new ArgNotApplicableException(argumentCount, s, token);  })*
+    	throw new ArgNotApplicableException(argumentCount, s, token);
+	if (arg.getType().isReadonly() && !parameters.get(argumentCount-1).getType().isReadonly())
+		throw new ReadonlyArgException(argumentCount, s, token);  })*
   {
     return argumentCount;  }}
 Attrib UnaryExpr () throws YAPLException:
@@ -374,6 +378,7 @@ void Decl() throws YAPLException :
 void Assignment() throws YAPLException :
 {
   Token t;
+  Token t2;
   Attrib target;
   Attrib source;
 }{
@@ -381,9 +386,11 @@ void Assignment() throws YAPLException :
     Symbol symbol = symbolTable.lookup(t.image);
     target = new AttribImpl(symbol.getType());
     if (symbol.getKind() != SymbolKind.Variable && symbol.getKind() != SymbolKind.Parameter)
-    	throw new SymbolIllegalUseException(symbol);  } (target = Selector(target))? t = ":=" source = Expr()
+    	throw new SymbolIllegalUseException(symbol);  } (target = Selector(target))? t2 = ":=" source = Expr()
   {
-    TypeMismatchAssignException.errorToken = t;
+    if (target.getType().isReadonly())
+		throw new ReadonlyAssignException(t);
+    TypeMismatchAssignException.errorToken = t2;
     codeGen.assign(target, source);  }}
 void IfStatement() throws YAPLException :
 {
@@ -452,9 +459,11 @@ void Block() throws YAPLException :
 List<Symbol> FormalParam() throws YAPLException :
 {
   Token t;
+  Token read = null;
   Type type;
   Symbol sym;
   ArrayList<Symbol> symbols = new ArrayList<Symbol>();
+  boolean readOnly = false;
 }
 {
   t = < IDENT >  {
@@ -463,11 +472,15 @@ List<Symbol> FormalParam() throws YAPLException :
     symbols.add(sym);  }("," t = < IDENT >  {
     sym = new SymbolImpl(t.image, SymbolKind.Parameter);
     symbolTable.addSymbol(sym);
-    symbols.add(sym);  })* ":" (< READONLY >)? type = Type()
+    symbols.add(sym);  })* ":" (read = < READONLY >  {
+    readOnly = true;  })? type = Type()
   {
+    if (readOnly && !(type instanceof ArrayType))
+    	throw new ReadonlyNotArrayException(read);
     for(Symbol s : symbols)
     {
-      s.setType(type);    }
+      s.setType(type);
+      type.setReadonly(readOnly);    }
     return symbols;  }}
 
 List<Symbol> FormalParamList() throws YAPLException :

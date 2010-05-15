@@ -113,5 +113,4 @@ public class SymbolImpl implements Symbol {
 		this.parameters = parameters;
 		
 	}
-
 }
