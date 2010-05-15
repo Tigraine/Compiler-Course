@@ -145,7 +145,7 @@ Attrib PrimaryExpr() throws YAPLException :
   Type type;
 }{
   (type = Literal()  {
-    return new AttribImpl(type);  } | "(" Expr() ")" | LOOKAHEAD(2) ProcedureCall() | t = < IDENT >
+    return new AttribImpl(type);  } | "(" Expr() ")" | LOOKAHEAD(2) retVal = ProcedureCall(true) | t = < IDENT >
   {
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() == SymbolKind.Procedure)    	throw new SymbolIllegalUseException(symbol);
@@ -153,14 +153,21 @@ Attrib PrimaryExpr() throws YAPLException :
 
   {
     return retVal;  }}
-void ProcedureCall() throws YAPLException :
-{ Token t; }
+Attrib ProcedureCall(boolean isFunction) throws YAPLException :
+{ Token t;
+Attrib retVal; }
 {
   t = < IDENT >
   {
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() != SymbolKind.Procedure)
-    	throw new SymbolIllegalUseException(symbol);  } "(" (ArgumentList())? ")"}
+    	throw new SymbolIllegalUseException(symbol);
+    if (isFunction && symbol.getType() == null)
+    	throw new ProcNotFuncExprException(symbol);
+    retVal = new AttribImpl(symbol.getType());  } "(" (ArgumentList())? ")"
+
+  {
+    return retVal;  }}
 void ArgumentList() throws YAPLException:
 {}
 {
@@ -326,7 +333,7 @@ void WriteStatement() throws YAPLException :
 
 void Statement() throws YAPLException :{}{
   IfStatement() | WhileStatement() | ReturnStatement() | WriteStatement() | LOOKAHEAD(2) Assignment() |
-  ProcedureCall() | Block()}
+  ProcedureCall(false) | Block()}
 
 void StatementList() throws YAPLException :
 {}
@@ -356,14 +363,16 @@ void FormalParamList() throws YAPLException :
   FormalParam() (";" FormalParam())*}
 
 void Procedure() throws YAPLException :
-{ Token t; }
+{ Token t;
+Type type; }
 {
   < PROCEDURE > t = < IDENT >  {
     Symbol symbol = new SymbolImpl(t.image, SymbolKind.Procedure);
     symbolTable.addSymbol(symbol);
     symbolTable.openScope(false);
     symbolTable.setParentSymbol(symbol);  } "(" (FormalParamList())? ")"
-  (":" Type())?
+  (":" type = Type()  {
+    symbol.setType(type);  })?
   Block() t = < IDENT >
   {
     Symbol parent = symbolTable.getNearestParentSymbol(SymbolKind.Procedure);
