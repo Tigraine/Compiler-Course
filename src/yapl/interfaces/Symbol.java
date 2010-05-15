@@ -1,5 +1,7 @@
 package yapl.interfaces;
 
+import java.util.List;
+
 import yapl.lib.Type;
 
 /** Interface to YAPL symbols contained in the symbol table.
@@ -99,4 +101,7 @@ public interface Symbol
 	
 	/** Return a text representation of this symbol for debugging purposes. */
 	public String toString();
+	
+	public List<Symbol> getParameters();
+	public void setParameters(List<Symbol> parameters);
 }

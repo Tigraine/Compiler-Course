@@ -1,5 +1,8 @@
 package yapl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import yapl.interfaces.Symbol;
 import yapl.lib.Type;
 
@@ -13,6 +16,7 @@ public class SymbolImpl implements Symbol {
 	private Symbol nextSymbol;
 	private boolean isGlobal;
 	private String name;
+	private List<Symbol> parameters = new ArrayList<Symbol>();
 
 	public SymbolImpl(String name, Symbol.SymbolKind kind) {
 		this.name = name;
@@ -97,6 +101,17 @@ public class SymbolImpl implements Symbol {
 	@Override
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	@Override
+	public List<Symbol> getParameters() {
+		return parameters;
+	}
+
+	@Override
+	public void setParameters(List<Symbol> parameters) {
+		this.parameters = parameters;
+		
 	}
 
 }

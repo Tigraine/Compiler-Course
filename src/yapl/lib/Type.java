@@ -1,9 +1,12 @@
 package yapl.lib;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import yapl.interfaces.Symbol;
+
 public class Type {
-	public Type parentType;
 	public boolean isCompatible(Type t){
-		Type parent = t;
 		return this.getClass().equals(t.getClass());
 	}
 }

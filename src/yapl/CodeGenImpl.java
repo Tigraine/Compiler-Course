@@ -38,8 +38,10 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public void assign(Attrib lvalue, Attrib expr) throws YAPLException {
-		// TODO Auto-generated method stub
-
+		if (!lvalue.getType().isCompatible(expr.getType()))
+		{
+			throw new TypeMismatchAssignException();
+		}
 	}
 
 	@Override
@@ -71,7 +73,7 @@ public class CodeGenImpl implements CodeGen {
 	public Attrib equalOp(Attrib x, Token op, Attrib y)
 			throws YAPLException {
 		if (x.getType().isCompatible(y.getType()))
-			return x;
+			return new AttribImpl(new BooleanType());
 		throw new IllegalEqualOpTypeException(op);
 	}
 
@@ -117,9 +119,13 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public Attrib op2(Attrib x, Token op, Attrib y) throws YAPLException {
-		if (x.getType() instanceof IntegerType && y.getType() instanceof IntegerType) {
-			return x;
+		if (op.kind == yapl.OR || op.kind == yapl.AND)
+		{
+			if (!(x.getType() instanceof BooleanType && y.getType() instanceof BooleanType))
+				throw new IllegalOp2Type(op);
 		}
+		if (x.getType().isCompatible(y.getType()))
+			return x;
 		throw new IllegalOp2Type(op);
 	}
 

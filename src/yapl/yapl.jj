@@ -106,6 +106,8 @@ void PredefinedProcedures() throws YAPLException :
 void PredefProc() throws YAPLException :
 {
   Token t;
+  Type type = null;
+  List<Symbol> parameters = null; 
 }
 {
   < PROCEDURE > t = < IDENT >
@@ -113,9 +115,13 @@ void PredefProc() throws YAPLException :
     Symbol symbol = new SymbolImpl(t.image, Symbol.SymbolKind.Procedure);
     symbolTable.addSymbol(symbol);
     symbolTable.openScope(true);
-  } "(" (FormalParamList())? ")"
-  (":" Type())? ";"
+    symbolTable.setParentSymbol(symbol);
+  } "(" (parameters = FormalParamList())? ")"
+  (":" type = Type())? ";"
   {
+    if (parameters != null)
+    	symbol.setParameters(parameters);
+    symbol.setType(type);
     symbolTable.closeScope();
   }}
 
@@ -129,26 +135,33 @@ Type Type() throws YAPLException :
   {
     return type;  }}
 Attrib Selector(Attrib a) throws YAPLException :
-{Token errorToken;
+{
+Token errorToken;
+Token errorToken2;
 Attrib index;}
 {
-  errorToken = "[" index = Expr() "]" (a = Selector(a))?
+  errorToken = "[" index = Expr() errorToken2 = "]" (a = Selector(a))?
   {
-    codeGen.verifyArraySelector(index, errorToken.next.next);
+    codeGen.verifyArraySelector(index, errorToken2);
     if (a.getType() instanceof ArrayType)    {
       return new AttribImpl(((ArrayType)a.getType()).getElementType());    }    
     throw new SelectorNotArrayException(errorToken);  }}
 
-void ArrayLen() throws YAPLException :
+Attrib ArrayLen() throws YAPLException :
 { Token t;
-Token errorToken; }{
+Token errorToken;
+Attrib retVal; }{
   errorToken = "#" t = < IDENT >  {
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() != SymbolKind.Variable && symbol.getKind() != SymbolKind.Parameter)
     	throw new SymbolIllegalUseException(symbol);
+    //This is probably a bug
     if (!(symbol.getType() instanceof ArrayType))
     {
-      throw new ArrayLenNotArrayException(errorToken);    }  } (Selector(null))?}
+      throw new ArrayLenNotArrayException(errorToken);    }
+    retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal))?
+  {
+    return new AttribImpl(new IntegerType());  }}
 Attrib PrimaryExpr() throws YAPLException :
 {
   Token t;
@@ -156,17 +169,19 @@ Attrib PrimaryExpr() throws YAPLException :
   Type type;
 }{
   (type = Literal()  {
-    return new AttribImpl(type);  } | "(" Expr() ")" | LOOKAHEAD(2) retVal = ProcedureCall(true) | t = < IDENT >
+    return new AttribImpl(type);  } | "(" retVal = Expr() ")" | LOOKAHEAD(2) retVal = ProcedureCall(true) | t = < IDENT >
   {
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() == SymbolKind.Procedure)    	throw new SymbolIllegalUseException(symbol);
-    retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal))? | ArrayLen())
+    retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal))? | retVal = ArrayLen())
 
   {
     return retVal;  }}
 Attrib ProcedureCall(boolean isFunction) throws YAPLException :
 { Token t;
-Attrib retVal; }
+Attrib retVal;
+int argumentCount = 0;
+Token errorToken; }
 {
   t = < IDENT >
   {
@@ -175,14 +190,28 @@ Attrib retVal; }
     	throw new SymbolIllegalUseException(symbol);
     if (isFunction && symbol.getType() == null)
     	throw new ProcNotFuncExprException(symbol);
-    retVal = new AttribImpl(symbol.getType());  } "(" (ArgumentList())? ")"
+    retVal = new AttribImpl(symbol.getType());  } "(" (argumentCount = ArgumentList(symbol))? errorToken = ")"
 
   {
+    if (symbol.getParameters().size() != argumentCount)
+    	throw new TooFewArgsException(symbol, errorToken);
     return retVal;  }}
-void ArgumentList() throws YAPLException:
-{}
+int ArgumentList(Symbol s) throws YAPLException:
 {
-  Expr() ("," Expr())*}
+	int argumentCount = 1;
+	List<Symbol> parameters = s.getParameters();
+	Attrib arg;
+}
+{
+  arg = Expr()
+  {
+    if ((parameters.size() < argumentCount) || (!parameters.get(argumentCount-1).getType().isCompatible(arg.getType())))
+    	throw new ArgNotApplicableException(argumentCount, s, token);  } ("," arg = Expr()  {
+    argumentCount++;
+    if ((parameters.size() < argumentCount) || (!parameters.get(argumentCount-1).getType().isCompatible(arg.getType())))
+    	throw new ArgNotApplicableException(argumentCount, s, token);  })*
+  {
+    return argumentCount;  }}
 Attrib UnaryExpr () throws YAPLException:
 {
   Token t = null;
@@ -281,8 +310,12 @@ Attrib CondAndExpr () throws YAPLException:
     return retVal;  }}
 Attrib Expr() throws YAPLException:
 {
-  Attrib retVal;}{
-  ((retVal = CondAndExpr() (< OR > CondAndExpr())*) | retVal = CreationExpr())
+  Attrib retVal;
+  Token op;
+  Attrib op2;}{
+  ((retVal = CondAndExpr() (op = < OR > op2 = CondAndExpr()
+  {
+    retVal = codeGen.op2(retVal, op, op2);   })*) | retVal = CreationExpr())
   {
     return retVal;  }}
 Attrib CreationExpr() throws YAPLException:
@@ -327,10 +360,11 @@ void VarDecl() throws YAPLException :
   ("," t = < IDENT >
   {
     sym = new SymbolImpl(t.image, Symbol.SymbolKind.Variable);
+    symbols.add(sym);
     symbolTable.addSymbol(sym);  })* ":" type = Type() ";"
   {
     for(Symbol s : symbols)    {
-      s.setType(type);    }  }}
+      s.setType(type);     }  }}
 
 void Decl() throws YAPLException :
 {}
@@ -340,23 +374,40 @@ void Decl() throws YAPLException :
 void Assignment() throws YAPLException :
 {
   Token t;
+  Attrib target;
+  Attrib source;
 }{
   t = < IDENT >  {
     Symbol symbol = symbolTable.lookup(t.image);
+    target = new AttribImpl(symbol.getType());
     if (symbol.getKind() != SymbolKind.Variable && symbol.getKind() != SymbolKind.Parameter)
-    	throw new SymbolIllegalUseException(symbol);  } (Selector(null))? ":=" Expr()}
+    	throw new SymbolIllegalUseException(symbol);  } (target = Selector(target))? t = ":=" source = Expr()
+  {
+    TypeMismatchAssignException.errorToken = t;
+    codeGen.assign(target, source);  }}
 void IfStatement() throws YAPLException :
-{}
 {
-  < IF > Expr() < THEN > StatementList() (< ELSE > StatementList())? < ENDIF >}
+  Attrib clause;
+}
+{
+  < IF > clause = Expr()  {
+    if (!(clause.getType() instanceof BooleanType))
+      	throw new CondNotBoolException(token);  } < THEN > StatementList() (< ELSE > StatementList())? < ENDIF >}
 
 void WhileStatement() throws YAPLException :
-{}{
-  < WHILE > Expr() < DO > StatementList() < ENDWHILE >}
+{
+  Attrib clause;
+}{
+  < WHILE > clause = Expr()  {
+    if (!(clause.getType() instanceof BooleanType))
+      	throw new CondNotBoolException(token);  } < DO > StatementList() < ENDWHILE >}
 
 void ReturnStatement() throws YAPLException :
 {}{
-  < RETURN > (Expr())?}
+  < RETURN > (Expr())?
+  {
+    Symbol s = symbolTable.getNearestParentSymbol(SymbolKind.Procedure);
+    s.setReturnSeen(true);  }}
 
 void WriteStatement() throws YAPLException :
 {}{
@@ -372,36 +423,65 @@ void StatementList() throws YAPLException :
   (Statement() ";")*}
 
 void Block() throws YAPLException :
-{}
+{
+  Token errorSymbol;
+}
 {
   {
     symbolTable.openScope(false);  }
-  (Decl())? < BEGIN > StatementList() < END >
+  (Decl())? < BEGIN > StatementList() errorSymbol = < END >
   {
+    Symbol parent = symbolTable.getNearestParentSymbol(SymbolKind.Procedure);
+    if (parent.getType() != null && !parent.getReturnSeen())
+    	throw new MissingReturnException(parent, errorSymbol);
     symbolTable.closeScope();  }}
 
-void FormalParam() throws YAPLException :
+List<Symbol> FormalParam() throws YAPLException :
 {
   Token t;
+  Type type;
+  Symbol sym;
+  ArrayList<Symbol> symbols = new ArrayList<Symbol>();
 }
 {
   t = < IDENT >  {
-    symbolTable.addSymbol(new SymbolImpl(t.image, SymbolKind.Parameter));  }("," t = < IDENT >  {
-    symbolTable.addSymbol(new SymbolImpl(t.image, SymbolKind.Parameter));  })* ":" (< READONLY >)? Type()}
+    sym = new SymbolImpl(t.image, SymbolKind.Parameter);
+    symbolTable.addSymbol(sym);
+    symbols.add(sym);  }("," t = < IDENT >  {
+    sym = new SymbolImpl(t.image, SymbolKind.Parameter);
+    symbolTable.addSymbol(sym);
+    symbols.add(sym);  })* ":" (< READONLY >)? type = Type()
+  {
+    for(Symbol s : symbols)
+    {
+      s.setType(type);    }
+    return symbols;  }}
 
-void FormalParamList() throws YAPLException :
-{}{
-  FormalParam() (";" FormalParam())*}
+List<Symbol> FormalParamList() throws YAPLException :
+{
+  List<Symbol> parameters;
+  List<Symbol> current;
+}{
+  parameters = FormalParam() (";" current = FormalParam()  {
+    for(Symbol s : current)    {		parameters.add(s);
+    }  })*
+  {
+    return parameters;  }}
 
 void Procedure() throws YAPLException :
 { Token t;
-Type type; }
+Type type;
+List<Symbol> parameters = null;
+}
 {
   < PROCEDURE > t = < IDENT >  {
     Symbol symbol = new SymbolImpl(t.image, SymbolKind.Procedure);
     symbolTable.addSymbol(symbol);
     symbolTable.openScope(false);
-    symbolTable.setParentSymbol(symbol);  } "(" (FormalParamList())? ")"
+    symbolTable.setParentSymbol(symbol);  } "(" (parameters = FormalParamList())? ")"
+  {
+    if (parameters != null)
+    	symbol.setParameters(parameters);  }
   (":" type = Type()  {
     symbol.setType(type);  })?
   Block() t = < IDENT >
