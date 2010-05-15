@@ -162,7 +162,7 @@ public class TypecheckTests extends AbstractParserTestCase {
 	}
 	
 	public void test39(){
-		runTestExpectingError("test39", CompilerError.SelectorNotArray, 13, 14);
+		runTestExpectingError("test39", CompilerError.SelectorNotArray, 13, 11);
 	}
 	
 	public void test40(){
@@ -186,7 +186,7 @@ public class TypecheckTests extends AbstractParserTestCase {
 	}
 	
 	public void test45(){
-		runTestExpectingError("test45", CompilerError.SelectorNotArray, 12, 16);
+		runTestExpectingError("test45", CompilerError.SelectorNotArray, 12, 13);
 	}
 	
 	public void test46(){

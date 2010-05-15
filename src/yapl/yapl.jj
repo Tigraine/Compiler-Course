@@ -207,12 +207,12 @@ int ArgumentList(Symbol s) throws YAPLException:
   {
     if ((parameters.size() < argumentCount) || (!parameters.get(argumentCount-1).getType().isCompatible(arg.getType())))
     	throw new ArgNotApplicableException(argumentCount, s, token);
-	if (arg.getType().isReadonly() && !parameters.get(argumentCount-1).getType().isReadonly())
+	if (arg.getType() instanceof ArrayType && arg.getType().isReadonly() && !parameters.get(argumentCount-1).getType().isReadonly())
 		throw new ReadonlyArgException(argumentCount, s, token);      } ("," arg = Expr()  {
     argumentCount++;
     if ((parameters.size() < argumentCount) || (!parameters.get(argumentCount-1).getType().isCompatible(arg.getType())))
     	throw new ArgNotApplicableException(argumentCount, s, token);
-	if (arg.getType().isReadonly() && !parameters.get(argumentCount-1).getType().isReadonly())
+	if (arg.getType() instanceof ArrayType && arg.getType().isReadonly() && !parameters.get(argumentCount-1).getType().isReadonly())
 		throw new ReadonlyArgException(argumentCount, s, token);  })*
   {
     return argumentCount;  }}
@@ -452,7 +452,7 @@ void Block() throws YAPLException :
   (Decl())? < BEGIN > StatementList() errorSymbol = < END >
   {
     Symbol parent = symbolTable.getNearestParentSymbol(SymbolKind.Procedure);
-    if (parent.getType() != null && !parent.getReturnSeen())
+    if (parent != null && parent.getType() != null && !parent.getReturnSeen())
     	throw new MissingReturnException(parent, errorSymbol);
     symbolTable.closeScope();  }}
 
