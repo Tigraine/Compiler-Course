@@ -82,7 +82,8 @@ TOKEN :
 	< PROCEDURE : "Procedure" > |
 	< TRUE : "True" > |
 	< FALSE : "False" > |
-  	< PrimType : "Integer" | "Boolean" > |	< IDENT : < LETTER > (< LETTER > | < DIGIT >)* > |
+	< INTEGER :  "Integer" > |
+  	< BOOLEAN : "Boolean" > |	< IDENT : < LETTER > (< LETTER > | < DIGIT >)* > |
 	< NUMBER: (< DIGIT >)+ > |
 	< STRING: "\"" ( " " | < LETTER > | < DIGIT > | < OTHERCHAR > )* "\"" > 
 }
@@ -118,9 +119,14 @@ void PredefProc() throws YAPLException :
     symbolTable.closeScope();
   }}
 
-void Type() throws YAPLException :
-{}{
-  < PrimType > ( "[" "]")*}
+Type Type() throws YAPLException :
+{
+  Type type;
+}{
+  (< INTEGER >  {    type = new IntegerType();  }  | < BOOLEAN >  {
+    type = new BooleanType();  }) ( "[" "]")*
+  {
+    return type;  }}
 void Selector() throws YAPLException :
 {}
 {
@@ -135,14 +141,18 @@ void ArrayLen() throws YAPLException :
 Attrib PrimaryExpr() throws YAPLException :
 {
   Token t;
-  Attrib retVal;
+  Attrib retVal = null;
   Type type;
 }{
   (type = Literal()  {
     return new AttribImpl(type);  } | "(" Expr() ")" | LOOKAHEAD(2) ProcedureCall() | t = < IDENT >
   {
     Symbol symbol = symbolTable.lookup(t.image);
-    if (symbol.getKind() == SymbolKind.Procedure)    	throw new SymbolIllegalUseException(symbol);  } (Selector())? | ArrayLen())}
+    if (symbol.getKind() == SymbolKind.Procedure)    	throw new SymbolIllegalUseException(symbol);
+    retVal = new AttribImpl(symbol.getType());  } (Selector())? | ArrayLen())
+
+  {
+    return retVal;  }}
 void ProcedureCall() throws YAPLException :
 { Token t; }
 {
@@ -172,7 +182,7 @@ Attrib MulExpr () throws YAPLException:
 {
   (retVal = UnaryExpr()) (t = MulOp() op2 = UnaryExpr()
   {
-    codeGen.op2(retVal, t, op2);  })*
+    retVal = codeGen.op2(retVal, t, op2);  })*
   {
     return retVal;  }    }
 Attrib AddExpr () throws YAPLException:
@@ -186,10 +196,17 @@ Attrib AddExpr () throws YAPLException:
   {
     return retVal;   }}
 
-void RelExpr () throws YAPLException:
-{}
+Attrib RelExpr () throws YAPLException:
 {
-  AddExpr() (RelOp() AddExpr())*}
+  Attrib retVal;
+  Token t;
+  Attrib op2;}
+{
+  retVal = AddExpr() (t = RelOp() op2 = AddExpr()
+  {
+    retVal = codeGen.relOp(retVal, t, op2);  })*
+  {
+    return retVal;  }}
 
 Token AddOp () throws YAPLException:
 {
@@ -215,14 +232,26 @@ Token RelOp() throws YAPLException:
    {
      return t;   }}
 
-void EqualOp() throws YAPLException :
-{}
+Token EqualOp() throws YAPLException :
 {
-    "==" | "!="}
-void EqualExpr () throws YAPLException:
-{}
+  Token t;
+}
 {
-  RelExpr() (EqualOp() RelExpr())*}
+    (t = "==" | t = "!=")
+    {
+      return t;    }}
+Attrib EqualExpr () throws YAPLException:
+{
+  Attrib retVal;
+  Token op;
+  Attrib op2;
+}
+{
+  retVal = RelExpr() (op = EqualOp() op2 = RelExpr()
+  {
+    retVal = codeGen.equalOp(retVal, op, op2);  })*
+  {
+    return retVal;  }}
 
 void CondAndExpr () throws YAPLException:
 {}
@@ -233,25 +262,37 @@ void Expr() throws YAPLException:
   (CondAndExpr() (< OR > CondAndExpr())*) | CreationExpr()}
 void CreationExpr() throws YAPLException:
 {}{
-  < NEW > < PrimType > "[" Expr() "]" ("[" Expr() "]")*}
+  < NEW > (<INTEGER >|< BOOLEAN >) "[" Expr() "]" ("[" Expr() "]")*}
 
 void ConstDecl() throws YAPLException :
-{ Token t; }{
+{ Token t;
+  Type type;
+}{
   < CONST > t = <IDENT >
   {
-    symbolTable.addSymbol(new SymbolImpl(t.image, SymbolKind.Constant));  } "=" Literal() ";"}
+    SymbolImpl sym = new SymbolImpl(t.image, SymbolKind.Constant);
+    symbolTable.addSymbol(sym);  } "=" type = Literal()  {
+    sym.setType(type);  } ";"}
 
 void VarDecl() throws YAPLException :
 {
   Token t;
-  ArrayList<Token> tokens = new ArrayList<Token>(); 
+  ArrayList<Symbol> symbols = new ArrayList<Symbol>();
+  Symbol sym;
+  Type type;
 }{
   t = < IDENT >
   {
-    symbolTable.addSymbol(new SymbolImpl(t.image, Symbol.SymbolKind.Variable));  }
+    sym = new SymbolImpl(t.image, Symbol.SymbolKind.Variable);
+    symbols.add(sym);
+    symbolTable.addSymbol(sym);  }
   ("," t = < IDENT >
   {
-    symbolTable.addSymbol(new SymbolImpl(t.image, Symbol.SymbolKind.Variable));  })* ":" Type() ";"}
+    sym = new SymbolImpl(t.image, Symbol.SymbolKind.Variable);
+    symbolTable.addSymbol(sym);  })* ":" type = Type() ";"
+  {
+    for(Symbol s : symbols)    {
+      s.setType(type);    }  }}
 
 void Decl() throws YAPLException :
 {}

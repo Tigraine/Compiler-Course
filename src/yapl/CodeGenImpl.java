@@ -69,8 +69,9 @@ public class CodeGenImpl implements CodeGen {
 	@Override
 	public Attrib equalOp(Attrib x, Token op, Attrib y)
 			throws YAPLException {
-		// TODO Auto-generated method stub
-		return null;
+		if (x.getType().isCompatible(y.getType()))
+			return x;
+		throw new IllegalEqualOpTypeException(op);
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public Attrib op2(Attrib x, Token op, Attrib y) throws YAPLException {
-		if (x.getType() instanceof IntegerType && x.getType() instanceof IntegerType) {
+		if (x.getType() instanceof IntegerType && y.getType() instanceof IntegerType) {
 			return x;
 		}
 		throw new IllegalOp2Type(op);
@@ -123,8 +124,10 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public Attrib relOp(Attrib x, Token op, Attrib y) throws YAPLException {
-		// TODO Auto-generated method stub
-		return null;
+		if (x.getType() instanceof IntegerType && y.getType() instanceof IntegerType) {
+			return x;
+		}
+		throw new IllegalRelOpTypeException(op);
 	}
 
 	@Override
