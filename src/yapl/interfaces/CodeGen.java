@@ -307,4 +307,5 @@ public interface CodeGen {
 	/** Emit an unconditional jump to <code>label</code>. */
 	public void jump(String label);
 
+	public void verifyArraySelector(Attrib a, Token t) throws YAPLException;
 }

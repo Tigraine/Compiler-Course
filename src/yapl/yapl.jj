@@ -124,20 +124,31 @@ Type Type() throws YAPLException :
   Type type;
 }{
   (< INTEGER >  {    type = new IntegerType();  }  | < BOOLEAN >  {
-    type = new BooleanType();  }) ( "[" "]")*
+    type = new BooleanType();  }) ( "[" "]"  {
+    type = new ArrayType(type);  })*
   {
     return type;  }}
-void Selector() throws YAPLException :
-{}
+Attrib Selector(Attrib a) throws YAPLException :
+{Token errorToken;
+Attrib index;}
 {
-  "[" Expr() "]" (Selector())?}
+  errorToken = "[" index = Expr() "]" (a = Selector(a))?
+  {
+    codeGen.verifyArraySelector(index, errorToken.next.next);
+    if (a.getType() instanceof ArrayType)    {
+      return new AttribImpl(((ArrayType)a.getType()).getElementType());    }    
+    throw new SelectorNotArrayException(errorToken);  }}
 
 void ArrayLen() throws YAPLException :
-{ Token t; }{
-  "#" t = < IDENT >  {
+{ Token t;
+Token errorToken; }{
+  errorToken = "#" t = < IDENT >  {
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() != SymbolKind.Variable && symbol.getKind() != SymbolKind.Parameter)
-    	throw new SymbolIllegalUseException(symbol);  } (Selector())?}
+    	throw new SymbolIllegalUseException(symbol);
+    if (!(symbol.getType() instanceof ArrayType))
+    {
+      throw new ArrayLenNotArrayException(errorToken);    }  } (Selector(null))?}
 Attrib PrimaryExpr() throws YAPLException :
 {
   Token t;
@@ -149,7 +160,7 @@ Attrib PrimaryExpr() throws YAPLException :
   {
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() == SymbolKind.Procedure)    	throw new SymbolIllegalUseException(symbol);
-    retVal = new AttribImpl(symbol.getType());  } (Selector())? | ArrayLen())
+    retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal))? | ArrayLen())
 
   {
     return retVal;  }}
@@ -260,16 +271,36 @@ Attrib EqualExpr () throws YAPLException:
   {
     return retVal;  }}
 
-void CondAndExpr () throws YAPLException:
-{}
+Attrib CondAndExpr () throws YAPLException:
 {
-  EqualExpr() (< AND > EqualExpr())*}
-void Expr() throws YAPLException:
-{}{
-  (CondAndExpr() (< OR > CondAndExpr())*) | CreationExpr()}
-void CreationExpr() throws YAPLException:
-{}{
-  < NEW > (<INTEGER >|< BOOLEAN >) "[" Expr() "]" ("[" Expr() "]")*}
+  Attrib retVal;
+}
+{
+  retVal = EqualExpr() (< AND > EqualExpr())*
+  {
+    return retVal;  }}
+Attrib Expr() throws YAPLException:
+{
+  Attrib retVal;}{
+  ((retVal = CondAndExpr() (< OR > CondAndExpr())*) | retVal = CreationExpr())
+  {
+    return retVal;  }}
+Attrib CreationExpr() throws YAPLException:
+{
+  Attrib retVal;
+  Type type;
+  Token errorToken;
+  Attrib index;
+}{
+  < NEW > (<INTEGER >  {
+    type = new IntegerType();  }|< BOOLEAN >  {
+    type = new BooleanType();  }) "[" index = Expr() errorToken = "]"  {
+    codeGen.verifyArraySelector(index, errorToken);
+    type = new ArrayType(type);  } ("[" index = Expr() errorToken = "]"  {
+    codeGen.verifyArraySelector(index, errorToken);
+    type = new ArrayType(type);  })*
+  {
+    return new AttribImpl(type);  }}
 
 void ConstDecl() throws YAPLException :
 { Token t;
@@ -313,7 +344,7 @@ void Assignment() throws YAPLException :
   t = < IDENT >  {
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() != SymbolKind.Variable && symbol.getKind() != SymbolKind.Parameter)
-    	throw new SymbolIllegalUseException(symbol);  } (Selector())? ":=" Expr()}
+    	throw new SymbolIllegalUseException(symbol);  } (Selector(null))? ":=" Expr()}
 void IfStatement() throws YAPLException :
 {}
 {

@@ -7,6 +7,7 @@ import yapl.interfaces.Symbol;
 import yapl.interfaces.YAPLToken;
 import yapl.lib.ArrayType;
 import yapl.lib.YAPLException;
+import yapl.types.BooleanType;
 import yapl.types.IntegerType;
 
 public class CodeGenImpl implements CodeGen {
@@ -125,7 +126,7 @@ public class CodeGenImpl implements CodeGen {
 	@Override
 	public Attrib relOp(Attrib x, Token op, Attrib y) throws YAPLException {
 		if (x.getType() instanceof IntegerType && y.getType() instanceof IntegerType) {
-			return x;
+			return new AttribImpl(new BooleanType());
 		}
 		throw new IllegalRelOpTypeException(op);
 	}
@@ -159,6 +160,12 @@ public class CodeGenImpl implements CodeGen {
 	public void writeLabel(String label, String comment) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void verifyArraySelector(Attrib a, Token t) throws YAPLException {
+		if (!(a.getType() instanceof IntegerType))
+			throw new BadArraySelectorException(t);
 	}
 
 }
