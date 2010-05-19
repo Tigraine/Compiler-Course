@@ -1,0 +1,19 @@
+/* CodeGen test input - predefined procedures and WriteStatement.
+ * $Id: test03min.yapl 115 2009-06-23 14:51:36Z mt $
+ */
+Program test03
+Declare
+	Const int = 5;
+	Const bool = True;
+Begin
+    Write "--- Start test03 ---";
+    writeln();
+    Write "int = ";
+    writeint(int); 
+    writeln();
+    Write "bool = ";
+    writebool(bool);
+    writeln();
+    Write "--- End test03 ---";
+    writeln();
+End test03.

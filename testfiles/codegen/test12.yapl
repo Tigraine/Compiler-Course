@@ -1,0 +1,41 @@
+/* CodeGen test input - procedures without parameters
+ *                      and without Return statements.
+ * $Id: test12.yapl 115 2009-06-23 14:51:36Z mt $
+ */
+Program test12
+Declare
+    m: Integer;
+    
+Procedure printLocal()
+Declare
+    m: Integer;
+Begin
+    m := 100;
+    Write "printLocal: m = ";
+    writeint(m);
+    Write " (100 expected)"; writeln();
+End printLocal;
+
+Procedure printGlobal()
+Begin
+    Write "printGlobal: m = ";
+    writeint(m);
+End printGlobal;
+
+Begin
+    Write "--- Start test12 ---";
+    writeln();
+    
+    m := 5;
+    printGlobal();
+    Write " (5 expected)"; writeln();
+
+    m := 10;
+    printLocal();
+    
+    printGlobal();
+    Write " (10 expected)"; writeln();
+    
+    Write "--- End test12 ---";
+    writeln();
+End test12.

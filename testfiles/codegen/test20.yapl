@@ -1,0 +1,74 @@
+/* CodeGen test input - multi-dimensional arrays.
+ * $Id: test20.yapl 151 2010-04-20 15:37:37Z mt $
+ */
+Program test20
+
+Procedure createMatrix(m, n: Integer): Integer[][]
+Declare
+    i, j: Integer;
+    matrix: Integer[][];
+Begin
+    matrix := new Integer[m][n];
+    i := 0;
+    While i < m Do
+        j := 0;
+        While j < n Do
+            matrix[i][j] := i*i + j;
+            j := j + 1;
+        EndWhile;
+        i := i + 1;
+    EndWhile;
+    Return matrix;
+End createMatrix;
+ 
+Procedure printMatrix(m: Readonly Integer[][])
+Declare
+    i, j: Integer;
+Begin
+    i := 0;
+    While i < #m Do
+        j := 0;
+        While j < #m[i] Do
+            Write "  ";
+            writeint(m[i][j]);
+            j := j + 1;
+        EndWhile;
+        writeln();
+        i := i + 1;
+    EndWhile;
+End printMatrix;
+
+Procedure printTransposed(m: Readonly Integer[][])
+Declare
+    i, j: Integer;
+Begin
+    j := 0;
+    While j < #m[0] Do
+        i := 0;
+        While i < #m Do
+            Write "  ";
+            writeint(m[i][j]);
+            i := i + 1;
+        EndWhile;
+        writeln();
+        j := j + 1;
+    EndWhile;
+End printTransposed;
+
+Declare
+    m: Integer[][];
+Begin
+    Write "--- Start test20 ---";
+    writeln();
+
+    m := createMatrix(3, 4);
+    Write "Matrix m:";
+    writeln();
+    printMatrix(m);
+    Write "m transposed:";
+    writeln();
+    printTransposed(m);
+
+    Write "--- End test20 ---";
+    writeln();
+End test20.

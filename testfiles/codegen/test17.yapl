@@ -1,0 +1,30 @@
+/* CodeGen test input - recursive procedures (Fibbonacci numbers).
+ * $Id: test17.yapl 115 2009-06-23 14:51:36Z mt $
+ */
+Program test17
+
+Procedure fib(k: Integer): Integer
+Begin
+    If k < 2 Then
+        Return k;
+    EndIf;
+    Return fib(k-1) + fib(k-2);
+End fib;
+
+Begin
+    Write "--- Start test17 ---";
+    writeln();
+
+    Write "fib(2) = ";
+    writeint(fib(2));
+    Write " (1 expected)"; writeln();
+    Write "fib(5) = ";
+    writeint(fib(5));
+    Write " (5 expected)"; writeln();
+    Write "fib(12) = ";
+    writeint(fib(12));
+    Write " (144 expected)"; writeln();
+
+    Write "--- End test17 ---";
+    writeln();
+End test17.
