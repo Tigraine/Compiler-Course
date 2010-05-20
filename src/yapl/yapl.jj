@@ -28,7 +28,7 @@ import yapl.interfaces.Symbol.SymbolKind;
 import yapl.types.*;
 public class yapl {
   private static Symboltable symbolTable = new SymboltableImpl();
-  private static CodeGen codeGen = new CodeGenImpl();
+  private static CodeGen codeGen = new MsilCodeGen();
 
   public void clear()  {  	symbolTable = new SymboltableImpl();
   	codeGen = new CodeGenImpl();
@@ -526,7 +526,8 @@ void Program() throws YAPLException :
   < PROGRAM > t = <IDENT >  {
     Symbol symbol = new SymbolImpl(t.image, SymbolKind.Program);
     symbolTable.openScope(false);
-    symbolTable.setParentSymbol(symbol);  } (Decl() | Procedure())*
+    symbolTable.setParentSymbol(symbol);
+    codeGen.program(t.image);  } (Decl() | Procedure())*
   < BEGIN > StatementList() < END > x = <IDENT >
   {
     if (!t.image.equals(x.image))

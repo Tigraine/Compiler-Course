@@ -308,4 +308,6 @@ public interface CodeGen {
 	public void jump(String label);
 
 	public void verifyArraySelector(Attrib a, Token t) throws YAPLException;
+
+	void program(String programName);
 }
