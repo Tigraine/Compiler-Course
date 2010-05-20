@@ -76,6 +76,21 @@ public class CodeGenTests extends TestCase {
 		verifyOutput("test02min");
 	}
 	
+	public void test03() {
+		createParser("test03min");
+		verifyOutput("test03min");
+	}
+	
+	public void test04() {
+		createParser("test04");
+		verifyOutput("test04");
+	}
+	
+	public void test05() {
+		createParser("test05");
+		verifyOutput("test05");
+	}
+	
 	private String readFile(String fileName) {
 		StringWriter writer = new StringWriter();
 		try {

@@ -3,7 +3,7 @@
  */
 Program test04
 Declare
-	Const constant = 10;
+	Const constant1 = 10;
 	k: Integer;
 	b: Boolean;
 Begin
@@ -15,7 +15,7 @@ Begin
 	writeint(k);
 	Write " (expected 3)";
 	writeln();
-    k := constant;
+    k := constant1;
 	Write "writeint(k): ";
 	writeint(k);
 	Write " (expected 10)";

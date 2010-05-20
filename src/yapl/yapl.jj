@@ -28,7 +28,7 @@ import yapl.interfaces.Symbol.SymbolKind;
 import yapl.types.*;
 public class yapl {
   private static Symboltable symbolTable = new SymboltableImpl();
-  private static CodeGen codeGen = new MsilCodeGen("default");
+  private static MsilCodeGen codeGen = new MsilCodeGen("default");
 
   public void clear(String outputFileName)  {  	symbolTable = new SymboltableImpl();
   	codeGen = new MsilCodeGen(outputFileName);
@@ -88,15 +88,28 @@ TOKEN :
 	< STRING: "\"" ( " " | < LETTER > | < DIGIT > | < OTHERCHAR > )* "\"" > 
 }
 
-Type Literal() throws YAPLException :
+Type Literal(boolean decl) throws YAPLException :
 {
-  Type t;}
+  Type t;
+  Token token;}
 {
   < TRUE >  {
+    if (decl)
+    	codeGen.pushInt(1);
+    else
+    	codeGen.addLocalValue(1);
     return new BooleanType();  } | < FALSE >
   {
-    return new BooleanType();  } | < NUMBER >
+    if (decl)
+    	codeGen.pushInt(0);
+    else
+    	codeGen.addLocalValue(0);
+    return new BooleanType();  } | token = < NUMBER >
   {
+    if (decl)
+    	codeGen.pushInt(Integer.parseInt(token.image));
+    else
+    	codeGen.addLocalValue(Integer.parseInt(token.image));
     return new IntegerType();  }}
 
 void PredefinedProcedures() throws YAPLException :
@@ -168,12 +181,13 @@ Attrib PrimaryExpr() throws YAPLException :
   Attrib retVal = null;
   Type type;
 }{
-  (type = Literal()  {
+  (type = Literal(true)  {
     return new AttribImpl(type);  } | "(" retVal = Expr() ")" | LOOKAHEAD(2) retVal = ProcedureCall(true) | t = < IDENT >
   {
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() == SymbolKind.Procedure)    	throw new SymbolIllegalUseException(symbol);
-    retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal))? | retVal = ArrayLen())
+    retVal = new AttribImpl(symbol.getType());
+    codeGen.loadLocal(symbol);  } (retVal = Selector(retVal))? | retVal = ArrayLen())
 
   {
     return retVal;  }}
@@ -308,9 +322,12 @@ Attrib EqualExpr () throws YAPLException:
 Attrib CondAndExpr () throws YAPLException:
 {
   Attrib retVal;
+  Token op;
+  Attrib op2;
 }
 {
-  retVal = EqualExpr() (< AND > EqualExpr())*
+  retVal = EqualExpr() (op = < AND > op2 =EqualExpr()  {
+    codeGen.op2(retVal, op, op2);  })*
   {
     return retVal;  }}
 Attrib Expr() throws YAPLException:
@@ -347,8 +364,9 @@ void ConstDecl() throws YAPLException :
   < CONST > t = <IDENT >
   {
     SymbolImpl sym = new SymbolImpl(t.image, SymbolKind.Constant);
-    symbolTable.addSymbol(sym);  } "=" type = Literal()  {
-    sym.setType(type);  } ";"}
+    symbolTable.addSymbol(sym);  } "=" type = Literal(false)  {
+    sym.setType(type);
+    codeGen.addLocal(sym);  } ";"}
 
 void VarDecl() throws YAPLException :
 {
@@ -369,12 +387,17 @@ void VarDecl() throws YAPLException :
     symbolTable.addSymbol(sym);  })* ":" type = Type() ";"
   {
     for(Symbol s : symbols)    {
-      s.setType(type);     }  }}
+      s.setType(type);
+      codeGen.addLocal(s);    }  }}
 
 void Decl() throws YAPLException :
 {}
 {
-  < DECLARE > ( ConstDecl() | VarDecl() )*}
+  {
+    codeGen.initLocals();  }
+  < DECLARE > ( ConstDecl() | VarDecl() )*
+  {
+    codeGen.closeLocals();  }}
 
 void Assignment() throws YAPLException :
 {
@@ -392,7 +415,7 @@ void Assignment() throws YAPLException :
     if (target.getType().isReadonly())
 		throw new ReadonlyAssignException(t);
     TypeMismatchAssignException.errorToken = t2;
-    codeGen.assign(target, source);  }}
+    codeGen.assign(target, source, symbol);  }}
 void IfStatement() throws YAPLException :
 {
   Attrib clause;

@@ -3,8 +3,8 @@
  */
 Program test05
 Declare
-	Const constant = 10;
-	Const true = True;
+	Const constant1 = 10;
+	Const true1 = True;
 	k: Integer;
 	b: Boolean;
 Begin
@@ -18,8 +18,8 @@ Begin
 	writebool(True And False);
 	Write " (False expected)";
 	writeln();
-	b := true And ((constant == constant-1) Or (3 < 4));
-	Write "b = true And ((constant == constant-1) Or (3 < 4)) = ";
+	b := true1 And ((constant1 == constant1-1) Or (3 < 4));
+	Write "b = true1 And ((constant1 == constant1-1) Or (3 < 4)) = ";
 	writebool(b);
 	Write " (True expected)";
 	writeln();
@@ -29,8 +29,8 @@ Begin
 	writebool(b);
 	Write " (True expected)";
 	writeln();
-    k := -(constant % 3) + 11/3*3;
-	Write "k = -(constant % 3) + 11/3*3 = ";
+    k := -(constant1 % 3) + 11/3*3;
+	Write "k = -(constant1 % 3) + 11/3*3 = ";
 	writeint(k);
 	Write " (8 expected)";
 	writeln();

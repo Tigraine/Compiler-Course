@@ -316,4 +316,6 @@ public interface CodeGen {
 	void endProgram();
 
 	void writeStatement(String text);
+
+	void pushInt(int value);
 }

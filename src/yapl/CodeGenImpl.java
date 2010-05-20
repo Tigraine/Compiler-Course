@@ -198,4 +198,10 @@ public class CodeGenImpl implements CodeGen {
 		
 	}
 
+	@Override
+	public void pushInt(int value) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

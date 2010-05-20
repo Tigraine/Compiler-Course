@@ -3,16 +3,16 @@
  */
 Program test03
 Declare
-	Const int = 5;
-	Const bool = True;
+	Const int1 = 5;
+	Const bool1 = True;
 Begin
     Write "--- Start test03 ---";
     writeln();
     Write "int = ";
-    writeint(int); 
+    writeint(int1); 
     writeln();
     Write "bool = ";
-    writebool(bool);
+    writebool(bool1);
     writeln();
     Write "--- End test03 ---";
     writeln();
