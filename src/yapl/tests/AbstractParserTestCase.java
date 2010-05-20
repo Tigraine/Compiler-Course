@@ -21,7 +21,7 @@ public abstract class AbstractParserTestCase  extends TestCase{
 	
 	protected void createParser(String fileName) throws ParseException, YAPLException {
 		try {
-			parser.clear();
+			parser.clear("test.out");
 			parser.ReInit(new StringReader(Program.PREDEFINED_PROCEDURES));
 			parser.PredefinedProcedures();
 			FileInputStream stream = new FileInputStream("testfiles\\" + getFolder() + "\\" + fileName + ".yapl");

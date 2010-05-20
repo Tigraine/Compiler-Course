@@ -28,10 +28,10 @@ import yapl.interfaces.Symbol.SymbolKind;
 import yapl.types.*;
 public class yapl {
   private static Symboltable symbolTable = new SymboltableImpl();
-  private static CodeGen codeGen = new MsilCodeGen();
+  private static CodeGen codeGen = new MsilCodeGen("default");
 
-  public void clear()  {  	symbolTable = new SymboltableImpl();
-  	codeGen = new CodeGenImpl();
+  public void clear(String outputFileName)  {  	symbolTable = new SymboltableImpl();
+  	codeGen = new MsilCodeGen(outputFileName);
   }
 }
 PARSER_END(yapl)
@@ -195,6 +195,7 @@ Token errorToken; }
   {
     if (symbol.getParameters().size() != argumentCount)
     	throw new TooFewArgsException(symbol, errorToken);
+    codeGen.callProc(symbol, null);
     return retVal;  }}
 int ArgumentList(Symbol s) throws YAPLException:
 {
@@ -430,8 +431,11 @@ void ReturnStatement() throws YAPLException :
     s.setReturnSeen(true);  }}
 
 void WriteStatement() throws YAPLException :
-{}{
-  < WRITE > < STRING >}
+{
+  Token t;}{
+  < WRITE > t = < STRING >
+  {
+    codeGen.writeStatement(t.image);  }}
 
 void Statement() throws YAPLException :{}{
   IfStatement() | WhileStatement() | ReturnStatement() | WriteStatement() | LOOKAHEAD(2) Assignment() |
@@ -532,12 +536,15 @@ void Program() throws YAPLException :
   {
     if (!t.image.equals(x.image))
     	throw new EndIdentifierMismatchException(symbol, x.image); 
-    symbolTable.closeScope();  }
+    symbolTable.closeScope();
+    codeGen.endProgram();  }
   "."}
 
 void Start() throws YAPLException :{  Token t;}{
   {
     symbolTable.setDebug(false);  }
   (    Program()
+    {
+      codeGen.compile();    }
   )*
   <EOF>}

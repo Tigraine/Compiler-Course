@@ -40,7 +40,7 @@ public class Program {
 		String programName = args[0];
 		try {
 		    FileInputStream fis = new FileInputStream(programName);
-		    parser.clear();
+		    parser.clear(String.format("%s.out", programName));
 		    parser.ReInit(new StringReader(PREDEFINED_PROCEDURES));
 		    parser.PredefinedProcedures();
 		    parser.ReInit(fis);

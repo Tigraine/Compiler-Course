@@ -20,10 +20,12 @@ import yapl.types.IntegerType;
 public class MsilCodeGen implements CodeGen {
 
 	private OutputStreamWriter writer;
+	private final String fileName;
 
 	public MsilCodeGen(String fileName){
+		this.fileName = fileName;
 		try {
-			this.writer = new OutputStreamWriter(new FileOutputStream("a"));
+			this.writer = new OutputStreamWriter(new FileOutputStream(fileName));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,8 +73,11 @@ public class MsilCodeGen implements CodeGen {
 
 	@Override
 	public Attrib callProc(Symbol proc, Attrib[] args) throws YAPLException {
-		// TODO Auto-generated method stub
-		return null;
+		if (proc.getName().equals("writeln"))
+		{
+			write("call void [mscorlib]System.Console::WriteLine()");
+		}
+		return new AttribImpl(proc.getType());
 	}
 
 	@Override
@@ -83,7 +88,6 @@ public class MsilCodeGen implements CodeGen {
 
 	@Override
 	public void enterProc(Symbol proc) throws YAPLException {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -194,12 +198,40 @@ public class MsilCodeGen implements CodeGen {
 	
 	@Override
 	public void program(String programName){
-		write(".assembly %s {}" + programName);
+		write(".assembly %s {}", programName);
+		write(".method static public void main() cil managed {");
+		write(".entrypoint");
+		write(".maxstack 100");
+	}
+	
+	@Override
+	public void writeStatement(String text) {
+		write("ldstr " + text);
+		write("call void [mscorlib]System.Console::Write(string)");
+	}
+	
+	@Override
+	public void endProgram() {
+		write("ret \n}");
 	}
 	
 	private void write(String s, Object...objects) {
 		try {
-			writer.write(String.format(s, objects));
+			writer.write(String.format(s, objects) + "\n");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void compile()
+	{
+		try {
+			writer.flush();
+			writer.close();
+			System.err.println("Compiling");
+			Process exec = Runtime.getRuntime().exec("ilasm " + fileName);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

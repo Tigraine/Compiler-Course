@@ -180,4 +180,22 @@ public class CodeGenImpl implements CodeGen {
 		
 	}
 
+	@Override
+	public void compile() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endProgram() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void writeStatement(String text) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

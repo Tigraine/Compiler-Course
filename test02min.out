@@ -1,0 +1,18 @@
+.assembly test02 {}
+.method static public void main() cil managed {
+.entrypoint
+.maxstack 100
+ldstr "--- Start test02 ---"
+call void [mscorlib]System.Console::Write(string)
+call void [mscorlib]System.Console::WriteLine()
+ldstr "5 = "
+call void [mscorlib]System.Console::Write(string)
+call void [mscorlib]System.Console::WriteLine()
+ldstr "True = "
+call void [mscorlib]System.Console::Write(string)
+call void [mscorlib]System.Console::WriteLine()
+ldstr "--- End test02 ---"
+call void [mscorlib]System.Console::Write(string)
+call void [mscorlib]System.Console::WriteLine()
+ret 
+}
