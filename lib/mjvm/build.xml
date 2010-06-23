@@ -1,0 +1,64 @@
+<project name="MicroJava-VM" default="compile" basedir=".">
+
+    <property name="src" value="src"/>
+    <property name="build" value="classes"/>
+
+    <!-- the object file to execute -->
+    <property name="exe" location="test/test.mj"/>
+
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${build}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${src}" destdir="${build}">
+        </javac>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+    </target>
+
+    <target name="run" depends="compile">
+        <java classname="MJ.Run" classpath="${build}">
+            <arg value="${exe}"/>
+        </java>
+    </target>
+
+    <target name="debug" depends="compile">
+        <java classname="MJ.Run" classpath="${build}">
+            <arg value="${exe}"/>
+            <arg value="-debug"/>
+        </java>
+    </target>
+
+    <target name="decode" depends="compile">
+    	<echo level="info" message="decoding ${exe}"/>
+        <java classname="MJ.Decode" classpath="${build}">
+            <arg value="${exe}"/>
+        </java>
+    </target>
+
+	<target name="decode-all" depends="compile">
+		<antcall target="decode">
+			<param name="exe" location="test/simple1.mj"/>
+		</antcall>
+		<antcall target="decode">
+			<param name="exe" location="test/simple2.mj"/>
+		</antcall>
+		<antcall target="decode">
+			<param name="exe" location="test/simple3.mj"/>
+		</antcall>
+		<antcall target="decode">
+			<param name="exe" location="test/simple4.mj"/>
+		</antcall>
+		<antcall target="decode">
+			<param name="exe" location="test/simple5.mj"/>
+		</antcall>
+		<antcall target="decode">
+			<param name="exe" location="test/simple6.mj"/>
+		</antcall>
+	</target>
+	
+</project>
