@@ -29,12 +29,20 @@ public class BackendMJ implements BackendBinSM {
 		static final byte SPRINT = (byte)55;
 		static final byte GETSTATIC = (byte)11;
 		static final byte PUTSTATIC = (byte)12;
+		static final byte LOAD = (byte)1;
+		static final byte STORE = (byte)6;
+		static final byte EXIT = (byte)49;
+		static final byte TRAP = (byte)55;
+		static final byte ENTER = (byte)48;
+		public static final byte CALL = (byte)46;
 	}
 	private int codeSize = 0;
 	private int entryAddress = 0;
 	private List<Byte> code = new ArrayList<Byte>();
 	private List<Byte> data = new ArrayList<Byte>();
 	//private ArrayLst<byte> code = new ArrayList<byte>();
+	
+	private Hashtable<String, Integer> backpatchList = new Hashtable<String, Integer>(); 
 	
 	private int currentCodeAddress()
 	{
@@ -135,11 +143,25 @@ public class BackendMJ implements BackendBinSM {
 	
 	@Override
 	public void assignLabel(String label) {
-		labels.put(label, currentCodeAddress()-1);
+		int currentAddr = currentCodeAddress();
+		if (backpatchList.containsKey(label))
+		{
+			Integer codeToBackpatch = backpatchList.get(label);
+			byte base = (byte) 0xFF;
+			code.set(codeToBackpatch, (byte)((base << 8) & currentCodeAddress()));
+			code.set(codeToBackpatch +1, (byte)(base & currentCodeAddress()));
+		}
+		
+		labels.put(label, currentAddr);
 	}
 	
 	private int getLabelAddress(String label)
 	{
+		if (!labels.containsKey(label))
+		{
+			backpatchList.put(label, currentCodeAddress());
+			return 0;
+		}
 		return labels.get(label);
 	}
 
@@ -158,8 +180,9 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void callProc(String label) {
-		// TODO Auto-generated method stub
-
+		int address = getLabelAddress(label);
+		emit(Mj.CALL);
+		emit2(address);
 	}
 
 	@Override
@@ -169,14 +192,25 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void enterProc(String label, int nParams, boolean main) {
-		// TODO Auto-generated method stub
-
+		assignLabel(label);
+		emit(Mj.ENTER);
+		emit(nParams);
+		emit(nParams);
+		
+		/*for(int i = 0; i < nParams; i++)
+		{
+			storeWord(i*wordSize(), false);
+		}*/
+		if (main){
+			entryAddress = getLabelAddress(label);
+		}
 	}
 
 	@Override
 	public void exitProc(String label) {
-		// TODO Auto-generated method stub
-
+		assignLabel(label + "_end");
+		emit(Mj.EXIT);
+		emit(Mj.RETURN);
 	}
 
 	@Override
@@ -246,13 +280,18 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void loadWord(int addr, boolean staticData) {
-		//TODO: implement
+		if(!staticData){
+			emit(Mj.LOAD);
+			emit(addr);
+		}
 	}
 	
 
 	@Override
 	public void storeWord(int addr, boolean staticData) {
-		//TODO: implement
+		if(!staticData)
+			emit(Mj.STORE);
+			emit(addr);
 	}
 
 	@Override
