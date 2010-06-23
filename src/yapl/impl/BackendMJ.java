@@ -25,12 +25,23 @@ public class BackendMJ implements BackendBinSM {
 		static final byte JLE = (byte)43;
 		static final byte JGT = (byte)44;
 		static final byte JGE = (byte)45;
+		static final byte SPRINT = (byte)55;
 	}
 	private int codeSize = 0;
-	private int dataSize = 0;
 	private int entryAddress = 0;
 	private List<Byte> code = new ArrayList<Byte>();
+	private List<Byte> data = new ArrayList<Byte>();
 	//private ArrayLst<byte> code = new ArrayList<byte>();
+	
+	private int currentCodeAddress()
+	{
+		return code.size();
+	}
+	
+	private int currentDataAddress()
+	{
+		return data.size();
+	}
 	
 	private void emit(byte value)
 	{
@@ -54,6 +65,15 @@ public class BackendMJ implements BackendBinSM {
 		byte base = (byte) 0xFF;
 		emit((base << 8) & value);
 		emit(base & value);
+	}
+	
+	private void emitData(byte value)
+	{
+		data.add(value);
+	}
+	private void emitData(int value)
+	{
+		emitData((byte)value);
 	}
 	
 	@Override
@@ -81,13 +101,11 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public int allocStringConstant(String string) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	private int currentCodeAddress()
-	{
-		return code.size();
+		int startAddress = currentDataAddress();
+		for(int i = 0; i < string.length(); i++)
+			emitData(string.charAt(i));
+		emitData(0);
+		return startAddress;
 	}
 	
 	@Override
@@ -293,9 +311,12 @@ public class BackendMJ implements BackendBinSM {
 		outStream.write('M');
 		outStream.write('J');
 		outStream.write(intToByteArray(code.size()));
-		outStream.write(intToByteArray(dataSize));
+		outStream.write(intToByteArray(data.size() / wordSize()));
 		outStream.write(intToByteArray(entryAddress));
 		for(Byte b : code){
+			outStream.write(b);
+		}
+		for(Byte b : data){
 			outStream.write(b);
 		}
 		outStream.flush();
@@ -303,8 +324,8 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void writeString(int addr) {
-		// TODO Auto-generated method stub
-
+		emit(Mj.SPRINT);
+		emit2(addr);
 	}
 
 }
