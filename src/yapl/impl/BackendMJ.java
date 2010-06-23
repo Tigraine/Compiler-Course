@@ -3,6 +3,7 @@ package yapl.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import yapl.interfaces.BackendBinSM;
@@ -128,10 +129,16 @@ public class BackendMJ implements BackendBinSM {
 
 	}
 
+	private Hashtable<String, Integer> labels = new Hashtable<String, Integer>();
+	
 	@Override
 	public void assignLabel(String label) {
-		// TODO Auto-generated method stub
-
+		labels.put(label, currentCodeAddress()-1);
+	}
+	
+	private int getLabelAddress(String label)
+	{
+		return labels.get(label);
 	}
 
 	@Override
@@ -142,8 +149,9 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void branchIf(boolean value, String label) {
-		// TODO Auto-generated method stub
-
+		loadConst(boolValue(value));
+		emit(Mj.JEQ);
+		emit2(getLabelAddress(label));
 	}
 
 	@Override
@@ -208,8 +216,8 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void jump(String label) {
-		// TODO Auto-generated method stub
-
+		emit(Mj.JUMP);
+		emit2(getLabelAddress(label));
 	}
 
 	@Override
