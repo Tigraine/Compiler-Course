@@ -230,14 +230,13 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public int wordSize() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 4;
 	}
 
 	@Override
 	public void writeInteger() {
-		// TODO Auto-generated method stub
-
+		loadConst(0);
+		code.add(Mj.PRINT);
 	}
 
 	private static byte[] intToByteArray(int value) {
@@ -251,11 +250,8 @@ public class BackendMJ implements BackendBinSM {
 	
 	@Override
 	public void writeObjectFile(OutputStream outStream) throws IOException {
-		
-		loadConst(0);
-		code.add(Mj.PRINT);
+			
 		code.add(Mj.RETURN);
-		
 		outStream.write('M');
 		outStream.write('J');
 		outStream.write(intToByteArray(code.size()));

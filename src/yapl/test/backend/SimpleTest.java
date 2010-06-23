@@ -20,6 +20,7 @@ public class SimpleTest {
 		backend.loadConst(500);
 		backend.loadConst(2);
 		backend.mul();
+		backend.writeInteger();
 		
         backend.writeObjectFile(new FileOutputStream(args[0]));
         System.out.println("wrote object file to " + args[0]);
