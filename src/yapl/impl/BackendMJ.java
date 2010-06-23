@@ -25,9 +25,18 @@ public class BackendMJ implements BackendBinSM {
 	private List<Byte> code = new ArrayList<Byte>();
 	//private ArrayLst<byte> code = new ArrayList<byte>();
 	
+	private void emit(byte value)
+	{
+		code.add(value);
+	}
+	private void emit(int value)
+	{
+		emit((byte)value);
+	}
+	
 	@Override
 	public void add() {
-		code.add(Mj.ADD);
+		emit(Mj.ADD);
 	}
 
 	@Override
@@ -56,8 +65,7 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void and() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -92,7 +100,7 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void div() {
-		code.add((byte)26);
+		emit(Mj.DIV);
 	}
 
 	@Override
@@ -153,23 +161,23 @@ public class BackendMJ implements BackendBinSM {
 	public void loadConst(int value) {
 		if (value < 6 && value >= 0)
 		{
-			code.add((byte)(15 + value));
+			emit(15 + value);
 		}
 		else if (value == -1)
-			code.add((byte)21);
+			emit(21);
 		else
 		{
-			code.add(Mj.CONST);
-			byte[] bValue = intToByteArray(value);
-			write4(bValue);
+			emit(Mj.CONST);
+			emit4(value);
 		}
 		
 	}
 	
-	private void write4(byte[] value)
+	private void emit4(int value)
 	{
+		byte[] byteArray = intToByteArray(value);
 		for(int i = 0; i < 4; i++)
-			code.add(value[i]);
+			emit(byteArray[i]);
 	}
 
 	@Override
@@ -180,17 +188,17 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void mod() {
-		code.add(Mj.REM);
+		emit(Mj.REM);
 	}
 
 	@Override
 	public void mul() {
-		code.add(Mj.MUL);
+		emit(Mj.MUL);
 	}
 
 	@Override
 	public void neg() {
-		code.add(Mj.NEG);
+		emit(Mj.NEG);
 	}
 
 	@Override
@@ -225,7 +233,7 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void sub() {
-		code.add(Mj.SUB);
+		emit(Mj.SUB);
 	}
 
 	@Override
@@ -236,7 +244,7 @@ public class BackendMJ implements BackendBinSM {
 	@Override
 	public void writeInteger() {
 		loadConst(0);
-		code.add(Mj.PRINT);
+		emit(Mj.PRINT);
 	}
 
 	private static byte[] intToByteArray(int value) {
@@ -251,7 +259,7 @@ public class BackendMJ implements BackendBinSM {
 	@Override
 	public void writeObjectFile(OutputStream outStream) throws IOException {
 			
-		code.add(Mj.RETURN);
+		emit(Mj.RETURN);
 		outStream.write('M');
 		outStream.write('J');
 		outStream.write(intToByteArray(code.size()));
