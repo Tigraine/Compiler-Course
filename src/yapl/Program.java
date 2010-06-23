@@ -17,9 +17,11 @@ package yapl;
 ***/
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 
+import yapl.impl.BackendMJ;
 import yapl.interfaces.CompilerError;
 import yapl.lib.CompilerMessage;
 import yapl.lib.YAPLException;
@@ -40,7 +42,8 @@ public class Program {
 		String programName = args[0];
 		try {
 		    FileInputStream fis = new FileInputStream(programName);
-		    parser.clear();
+		    BackendMJ backend = new BackendMJ();
+			parser.init(backend);
 		    parser.ReInit(new StringReader(PREDEFINED_PROCEDURES));
 		    parser.PredefinedProcedures();
 		    parser.ReInit(fis);
@@ -48,6 +51,7 @@ public class Program {
 		    parser.Start();
 
 		    CompilerMessage.printOK(programName);
+		    backend.writeObjectFile(new FileOutputStream(programName + ".out"));
 	    } catch (YAPLException ex) {
 	    	writeError(ex, programName);
 		} catch (ParseException e) {

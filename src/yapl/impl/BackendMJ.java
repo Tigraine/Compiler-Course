@@ -42,7 +42,16 @@ public class BackendMJ implements BackendBinSM {
 	private List<Byte> data = new ArrayList<Byte>();
 	//private ArrayLst<byte> code = new ArrayList<byte>();
 	
-	private Hashtable<String, Integer> backpatchList = new Hashtable<String, Integer>(); 
+	private Hashtable<String, Integer> backpatchList = new Hashtable<String, Integer>();
+	
+	public BackendMJ()
+	{
+		//Initialize Built-In Methods
+		enterProc("writeln", 0, false);
+		int addr = allocStringConstant("\n");
+		writeString(addr);
+		exitProc("writeln");
+	}
 	
 	private int currentCodeAddress()
 	{
@@ -51,7 +60,7 @@ public class BackendMJ implements BackendBinSM {
 	
 	private int currentDataAddress()
 	{
-		return data.size();
+		return data.size() / 4;
 	}
 	
 	private void emit(byte value)
@@ -116,6 +125,8 @@ public class BackendMJ implements BackendBinSM {
 		for(int i = 0; i < string.length(); i++)
 			emitData(string.charAt(i));
 		emitData(0);
+		while (data.size() % 4 > 0)
+			emitData(0);
 		return startAddress;
 	}
 	

@@ -12,7 +12,7 @@ public class Scope {
 	private Hashtable<String, Symbol> symbols = new Hashtable<String, Symbol>();
 	private Scope parent;
 	private Symbol parentSymbol;
-	
+	private boolean isGlobal;
 	public Scope() {
 		this(null);
 	}
@@ -27,7 +27,7 @@ public class Scope {
 			throw new SymbolAlreadyDefinedException(foundSymbol);
 		}
 		symbols.put(symbolName, symbol);
-		symbol.setGlobal(parent == null);
+		symbol.setGlobal(isGlobal);
 	}
 	
 	public Symbol getSymbol(String name) throws YAPLException {
@@ -49,5 +49,11 @@ public class Scope {
 		if (parentSymbol != null && parentSymbol.getKind() == kind) return parentSymbol;
 		if (parent == null) return null;
 		return parent.getNearestParentSymbol(kind);
+	}
+	public void setGlobal(boolean isGlobal) {
+		this.isGlobal = isGlobal;
+	}
+	public boolean isGlobal() {
+		return isGlobal;
 	}
 }

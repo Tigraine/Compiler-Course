@@ -28,10 +28,11 @@ import yapl.interfaces.Symbol.SymbolKind;
 import yapl.types.*;
 public class yapl {
   private static Symboltable symbolTable = new SymboltableImpl();
-  private static CodeGen codeGen = new CodeGenImpl();
+  private static CodeGen codeGen;
 
-  public void clear()  {  	symbolTable = new SymboltableImpl();
-  	codeGen = new CodeGenImpl();
+  public void init(BackendBinSM backend)
+  {    symbolTable = new SymboltableImpl();
+  	codeGen = new CodeGenImpl(backend); 
   }
 }
 PARSER_END(yapl)
@@ -430,8 +431,12 @@ void ReturnStatement() throws YAPLException :
     s.setReturnSeen(true);  }}
 
 void WriteStatement() throws YAPLException :
-{}{
-  < WRITE > < STRING >}
+{
+  Token s;
+}{
+  < WRITE > s = < STRING >
+  {
+    codeGen.writeString(s.image);  }}
 
 void Statement() throws YAPLException :{}{
   IfStatement() | WhileStatement() | ReturnStatement() | WriteStatement() | LOOKAHEAD(2) Assignment() |
@@ -525,10 +530,12 @@ void Program() throws YAPLException :
     Token x;  }
   < PROGRAM > t = <IDENT >  {
     Symbol symbol = new SymbolImpl(t.image, SymbolKind.Program);
-    symbolTable.openScope(false);
+    symbolTable.openScope(true);
     symbolTable.setParentSymbol(symbol);  } (Decl() | Procedure())*
-  < BEGIN > StatementList() < END > x = <IDENT >
+  < BEGIN >  {
+    codeGen.enterProc(symbol);  } StatementList() < END > x = <IDENT >
   {
+    codeGen.exitProc(symbol);
     if (!t.image.equals(x.image))
     	throw new EndIdentifierMismatchException(symbol, x.image); 
     symbolTable.closeScope();  }

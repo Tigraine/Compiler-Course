@@ -1,7 +1,9 @@
 package yapl;
 
 import yapl.exceptions.*;
+import yapl.impl.BackendMJ;
 import yapl.interfaces.Attrib;
+import yapl.interfaces.BackendBinSM;
 import yapl.interfaces.CodeGen;
 import yapl.interfaces.Symbol;
 import yapl.interfaces.YAPLToken;
@@ -12,6 +14,13 @@ import yapl.types.IntegerType;
 
 public class CodeGenImpl implements CodeGen {
 
+	private BackendBinSM backend;
+	
+	public CodeGenImpl(BackendBinSM backend)
+	{
+		this.backend = backend;
+	}
+	
 	@Override
 	public Attrib allocArray(ArrayType arrayType) throws YAPLException {
 		// TODO Auto-generated method stub
@@ -59,8 +68,12 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public void enterProc(Symbol proc) throws YAPLException {
-		// TODO Auto-generated method stub
-
+		backend.enterProc(proc.getName(), proc.getParameters().size(), proc.isGlobal());
+	}
+	
+	@Override
+	public void exitProc(Symbol proc) throws YAPLException {
+		backend.exitProc(proc.getName());
 	}
 
 	@Override
@@ -69,12 +82,6 @@ public class CodeGenImpl implements CodeGen {
 		if (x.getType().isCompatible(y.getType()))
 			return new AttribImpl(new BooleanType());
 		throw new IllegalEqualOpTypeException(op);
-	}
-
-	@Override
-	public void exitProc(Symbol proc) throws YAPLException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -164,8 +171,8 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public void writeString(String string) throws YAPLException {
-		// TODO Auto-generated method stub
-		
+		int addr = backend.allocStringConstant(string);
+		backend.writeString(addr);
 	}
 
 }
