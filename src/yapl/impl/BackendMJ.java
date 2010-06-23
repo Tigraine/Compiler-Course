@@ -21,6 +21,10 @@ public class BackendMJ implements BackendBinSM {
 		static final byte JEQ = (byte)40;
 		static final byte JUMP = (byte)39;
 		static final byte JNE = (byte)41;
+		static final byte JLT = (byte)42;
+		static final byte JLE = (byte)43;
+		static final byte JGT = (byte)44;
+		static final byte JGE = (byte)45;
 	}
 	private int codeSize = 0;
 	private int dataSize = 0;
@@ -88,12 +92,7 @@ public class BackendMJ implements BackendBinSM {
 	
 	@Override
 	public void and() {
-		emit(Mj.JEQ);   //1 Byte
-		emit2(currentCodeAddress() + 6);  //2 Bytes
-		loadConst(0);	//1 Byte
-		emit(Mj.JUMP);  //1 Byte
-		emit2(currentCodeAddress() + 3);  //2 Bytes
-		loadConst(1);  //1 Byte
+		isEqual();
 	}
 	
 
@@ -123,7 +122,7 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public int boolValue(boolean value) {
-		// TODO Auto-generated method stub
+		if (value) return 1;
 		return 0;
 	}
 
@@ -158,14 +157,22 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void isEqual() {
-		// TODO Auto-generated method stub
-
+		emit(Mj.JEQ);   //1 Byte
+		emit2(currentCodeAddress() + 6);  //2 Bytes
+		loadConst(0);	//1 Byte
+		emit(Mj.JUMP);  //1 Byte
+		emit2(currentCodeAddress() + 3);  //2 Bytes
+		loadConst(1);  //1 Byte
 	}
 
 	@Override
 	public void isGreater() {
-		// TODO Auto-generated method stub
-
+		emit(Mj.JGT);
+		emit2(currentCodeAddress() + 6);
+		loadConst(0);
+		emit(Mj.JUMP);
+		emit2(currentCodeAddress() + 3);
+		loadConst(1);
 	}
 
 	@Override
