@@ -8,6 +8,7 @@ import yapl.ParseException;
 import yapl.Program;
 import yapl.TokenMgrError;
 import yapl.yapl;
+import yapl.impl.BackendMJ;
 import yapl.interfaces.CompilerError;
 import yapl.lib.CompilerMessage;
 import yapl.lib.YAPLException;
@@ -21,7 +22,7 @@ public abstract class AbstractParserTestCase  extends TestCase{
 	
 	protected void createParser(String fileName) throws ParseException, YAPLException {
 		try {
-			parser.clear();
+			parser.init(new BackendMJ());
 			parser.ReInit(new StringReader(Program.PREDEFINED_PROCEDURES));
 			parser.PredefinedProcedures();
 			FileInputStream stream = new FileInputStream("testfiles\\" + getFolder() + "\\" + fileName + ".yapl");
