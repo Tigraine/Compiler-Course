@@ -27,6 +27,8 @@ public class BackendMJ implements BackendBinSM {
 		static final byte JGT = (byte)44;
 		static final byte JGE = (byte)45;
 		static final byte SPRINT = (byte)55;
+		static final byte GETSTATIC = (byte)11;
+		static final byte PUTSTATIC = (byte)12;
 	}
 	private int codeSize = 0;
 	private int entryAddress = 0;
@@ -244,8 +246,13 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void loadWord(int addr, boolean staticData) {
-		// TODO Auto-generated method stub
+		//TODO: implement
+	}
+	
 
+	@Override
+	public void storeWord(int addr, boolean staticData) {
+		//TODO: implement
 	}
 
 	@Override
@@ -277,12 +284,6 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void storeArrayElement() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void storeWord(int addr, boolean staticData) {
 		// TODO Auto-generated method stub
 
 	}
