@@ -101,11 +101,7 @@ public class BackendMJ implements BackendBinSM {
 		emit(Mj.ADD);
 		loadConst(0);
 		emit(Mj.JNE);
-		emit2(currentCodeAddress() + 6);
-		loadConst(0);
-		emit(Mj.JUMP);
-		emit2(currentCodeAddress() + 3);
-		loadConst(1);
+		emitOperatorJump();
 	}
 
 	@Override
@@ -158,16 +154,15 @@ public class BackendMJ implements BackendBinSM {
 	@Override
 	public void isEqual() {
 		emit(Mj.JEQ);   //1 Byte
-		emit2(currentCodeAddress() + 6);  //2 Bytes
-		loadConst(0);	//1 Byte
-		emit(Mj.JUMP);  //1 Byte
-		emit2(currentCodeAddress() + 3);  //2 Bytes
-		loadConst(1);  //1 Byte
+		emitOperatorJump();
 	}
 
 	@Override
 	public void isGreater() {
 		emit(Mj.JGT);
+		emitOperatorJump();
+	}
+	private void emitOperatorJump() {
 		emit2(currentCodeAddress() + 6);
 		loadConst(0);
 		emit(Mj.JUMP);
@@ -177,14 +172,12 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void isGreaterOrEqual() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void isLess() {
-		// TODO Auto-generated method stub
-
+		emit(Mj.JLT);
+		emitOperatorJump();
 	}
 
 	@Override
