@@ -17,9 +17,9 @@ public class SimpleTest {
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		BackendBinSM backend = new BackendMJ();
 
+		backend.loadConst(1);
 		backend.loadConst(3);
-		backend.loadConst(5);
-		backend.isLess();
+		backend.isLessOrEqual();
 		backend.writeInteger();
 		
         backend.writeObjectFile(new FileOutputStream(args[0]));

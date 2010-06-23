@@ -172,6 +172,8 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void isGreaterOrEqual() {
+		emit(Mj.JGE);
+		emitOperatorJump();
 	}
 
 	@Override
@@ -182,8 +184,8 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void isLessOrEqual() {
-		// TODO Auto-generated method stub
-
+		emit(Mj.JLE);
+		emitOperatorJump();
 	}
 
 	@Override
