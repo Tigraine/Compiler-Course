@@ -18,6 +18,9 @@ public class BackendMJ implements BackendBinSM {
 		static final byte REM = (byte)27;
 		static final byte NEG = (byte)28;
 		static final byte CONST = (byte)22;
+		static final byte JEQ = (byte)40;
+		static final byte JUMP = (byte)39;
+		static final byte JNE = (byte)41;
 	}
 	private int codeSize = 0;
 	private int dataSize = 0;
@@ -32,6 +35,21 @@ public class BackendMJ implements BackendBinSM {
 	private void emit(int value)
 	{
 		emit((byte)value);
+	}
+	
+	
+	private void emit4(int value)
+	{
+		byte[] byteArray = intToByteArray(value);
+		for(int i = 0; i < 4; i++)
+			emit(byteArray[i]);
+	}
+	
+	private void emit2(int value)
+	{
+		byte base = (byte) 0xFF;
+		emit((base << 8) & value);
+		emit(base & value);
 	}
 	
 	@Override
@@ -63,9 +81,32 @@ public class BackendMJ implements BackendBinSM {
 		return 0;
 	}
 
+	private int currentCodeAddress()
+	{
+		return code.size();
+	}
+	
 	@Override
 	public void and() {
-		
+		emit(Mj.JEQ);   //1 Byte
+		emit2(currentCodeAddress() + 6);  //2 Bytes
+		loadConst(0);	//1 Byte
+		emit(Mj.JUMP);  //1 Byte
+		emit2(currentCodeAddress() + 3);  //2 Bytes
+		loadConst(1);  //1 Byte
+	}
+	
+
+	@Override
+	public void or() {
+		emit(Mj.ADD);
+		loadConst(0);
+		emit(Mj.JNE);
+		emit2(currentCodeAddress() + 6);
+		loadConst(0);
+		emit(Mj.JUMP);
+		emit2(currentCodeAddress() + 3);
+		loadConst(1);
 	}
 
 	@Override
@@ -172,13 +213,6 @@ public class BackendMJ implements BackendBinSM {
 		}
 		
 	}
-	
-	private void emit4(int value)
-	{
-		byte[] byteArray = intToByteArray(value);
-		for(int i = 0; i < 4; i++)
-			emit(byteArray[i]);
-	}
 
 	@Override
 	public void loadWord(int addr, boolean staticData) {
@@ -199,12 +233,6 @@ public class BackendMJ implements BackendBinSM {
 	@Override
 	public void neg() {
 		emit(Mj.NEG);
-	}
-
-	@Override
-	public void or() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
