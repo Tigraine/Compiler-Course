@@ -58,12 +58,6 @@ public class CodeGenImpl implements CodeGen {
 	}
 
 	@Override
-	public void callWrite(String string) throws YAPLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void enterProc(Symbol proc) throws YAPLException {
 		// TODO Auto-generated method stub
 
@@ -157,21 +151,21 @@ public class CodeGenImpl implements CodeGen {
 	}
 
 	@Override
-	public void writeLabel(String label) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void writeLabel(String label, String comment) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void verifyArraySelector(Attrib a, Token t) throws YAPLException {
 		if (!(a.getType() instanceof IntegerType))
 			throw new BadArraySelectorException(t);
+	}
+
+	@Override
+	public void assignLabel(String label) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void writeString(String string) throws YAPLException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

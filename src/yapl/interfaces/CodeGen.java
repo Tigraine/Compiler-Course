@@ -10,34 +10,38 @@ import yapl.lib.YAPLException;
  * methods should also implement type checking.
  * <p>
  * An implementation of this interface should not emit assembler or machine code
- * directly, but is expected to "generate" generic 3-address-code by calling
- * methods of the {@link yapl.interfaces.TargetArch} interface only.
+ * directly, but is expected to virtually "generate" generic 3-address-code by calling
+ * methods of an appropriate backend interface only.
+ * (See e.g. the {@link BackendBinSM} interface).
+ * </p><p>
+ * The term <em>register</em> is used for both register and stack machines.
+ * In the latter case, a register value refers to an element
+ * on the expression stack; register numbers are not needed then, because
+ * the order of operands is implied by the stack.
  * </p>
  * 
  * @author Mario Taschwer
- * @version $Id: CodeGen.java 141 2010-03-16 17:17:56Z mt $
+ * @version $Id: CodeGen.java 150 2010-04-15 15:55:58Z mt $
  */
 public interface CodeGen {
 
 	/**
-	 * Generate a new (assembler) label. Labels must be unique.
+	 * Generate a new address label. Labels must be unique.
 	 */
 	public String newLabel();
 
-	/** Emit an assembler label. */
-	public void writeLabel(String label);
-
-	/** Emit an assembler label with comment. */
-	public void writeLabel(String label, String comment);
+	/** Assign an address label to the current code address. */
+	public void assignLabel(String label);
 
 	/**
-	 * Load the value represented by <code>attr</code> into a register, if
-	 * <code>attr</code> does not already represent a register value. The
+	 * Load the value represented by <code>attr</code> into a register
+	 * if <code>attr</code> does not already represent a register value. The
 	 * {@link Attrib#getRegister() register property} of <code>attr</code>
 	 * will be set to the register number.
 	 * 
 	 * @throws YAPLException
-	 *             (NoMoreRegs) if there are no free registers available.
+	 *             (NoMoreRegs) if there are no free registers available;
+	 *             cannot occur with stack machine backends.
 	 * @throws YAPLException
 	 *             (Internal) if the {@link Attrib#getKind() kind} or
 	 *             {@link Attrib#getType() type} properties of <code>attr</code>
@@ -47,18 +51,19 @@ public interface CodeGen {
 	throws YAPLException;
 
 	/**
-	 * Free the register used by the register operand <code>attr</code>. Has
-	 * no effect if <code>attr</code> does not represent a register operand.
+	 * Release the register used by the register operand <code>attr</code>. 
 	 * The operand's {@link Attrib#getKind() kind} will be set to
 	 * {@link Attrib#None}.
+	 * Has no effect with stack machine backends or
+	 * if <code>attr</code> does not represent a register operand.
 	 */
 	public void freeReg(Attrib attr);
 
 	/**
-	 * Allocate space for a memory object (i.e. a variable). If the symbol
-	 * belongs to a {@link Symbol#isGlobal() global scope}, space will be
-	 * allocated on the heap; otherwise, space will be allocated in the current
-	 * stack frame.
+	 * Allocate space for a memory object (i.e. a variable) at compile time. 
+	 * If the symbol belongs to a {@link Symbol#isGlobal() global scope}, space will be
+	 * allocated in the global data area; otherwise, space will be allocated 
+	 * in the current stack frame.
 	 * 
 	 * @param sym
 	 *            the symbol to allocate space for. The symbol's
@@ -71,7 +76,7 @@ public interface CodeGen {
 	throws YAPLException;
 
 	/**
-	 * Store length of given array dimension.
+	 * Store length of given array dimension at run time.
 	 * The stored array dimensions are needed for run-time allocation of
 	 * the array, see {@link #allocArray(Type)}.
 	 * @param dim       dimension number; starts at 0.
@@ -86,8 +91,8 @@ public interface CodeGen {
 	/**
 	 * Allocate array at run time.
 	 * @param arrayType  array type.
-	 * @return           Attrib object representing a register or stack operand
-	 *                   containing the array start address.
+	 * @return           Attrib object representing a register operand
+	 *                   holding the array base address.
 	 * @throws YAPLException
 	 */
 	public Attrib allocArray(ArrayType arrayType)
@@ -107,6 +112,9 @@ public interface CodeGen {
 
 	/**
 	 * Generate code for address offset computation of an array element.
+	 * With stack machines supporting array access, this method may simply
+	 * push the array base address and the index operand to the expression
+	 * stack.
 	 * 
 	 * @param arr
 	 *            the operand representing the array base address; its
@@ -117,11 +125,9 @@ public interface CodeGen {
 	 *            see {@link Attrib#ArrayElement}.
 	 * @param index
 	 *            the operand (expression) representing the index of the array
-	 *            element (starts at 0). It will be linked to <code>arr</code>
-	 *            using {@link Attrib#setOffsetAttrib(Attrib)}.
+	 *            element (starts at 0).
 	 * @throws YAPLException
-	 *             (Internal) if <code>arr</code> does not represent an array
-	 *             type.
+	 *            (Internal) if <code>arr</code> does not represent an array type.
 	 */
 	public void arrayOffset(Attrib arr, Attrib index) 
 	throws YAPLException;
@@ -163,8 +169,8 @@ public interface CodeGen {
 	 *             (Internal) if the operator symbol is not a valid unary
 	 *             operator.
 	 * @throws YAPLException
-	 *             (IllegalOp1Type) if the operand type cannot be applied to the
-	 *             given operator.
+	 *             (IllegalOp1Type) if the operator cannot be applied to the
+	 *             given operand type.
 	 */
 	public Attrib op1(Token op, Attrib x) 
 	throws YAPLException;
@@ -185,8 +191,8 @@ public interface CodeGen {
 	 *             (Internal) if the operator symbol is not a valid binary
 	 *             operator.
 	 * @throws YAPLException
-	 *             (IllegalOp2Type) if the operand types cannot be applied to
-	 *             the given operator.
+	 *             (IllegalOp2Type) if the operator cannot be applied to
+	 *             the given operand types.
 	 */
 	public Attrib op2(Attrib x, Token op, Attrib y) 
 	throws YAPLException;
@@ -207,8 +213,8 @@ public interface CodeGen {
 	 *             (Internal) if the operator symbol is not a valid relational
 	 *             operator.
 	 * @throws YAPLException
-	 *             (IllegalRelOpType) if the operand types cannot be applied to
-	 *             the given operator.
+	 *             (IllegalRelOpType) if the operator cannot be applied to
+	 *             the given operand types.
 	 */
 	public Attrib relOp(Attrib x, Token op, Attrib y) 
 	throws YAPLException;
@@ -229,14 +235,14 @@ public interface CodeGen {
 	 *             (Internal) if the operator symbol is not a valid relational
 	 *             operator.
 	 * @throws YAPLException
-	 *             (IllegalEqualOpType) if the operand types cannot be applied to
-	 *             the given operator.
+	 *             (IllegalEqualOpType) if the operator cannot be applied to
+	 *             the given operand types.
 	 */
 	public Attrib equalOp(Attrib x, Token op, Attrib y) 
 	throws YAPLException;
 
 	/**
-	 * Enter procedure.
+	 * Enter procedure. Generate the procedure's prolog (setup stack frame).
 	 * 
 	 * @param proc
 	 *            the procedure symbol; the formal parameters must already be
@@ -248,7 +254,7 @@ public interface CodeGen {
 	throws YAPLException;
 
 	/**
-	 * Exit procedure.
+	 * Exit procedure. Generate the procedure's epilog (release stack frame).
 	 * 
 	 * @param proc
 	 *            the procedure symbol; if <code>proc == null</code>,
@@ -259,7 +265,8 @@ public interface CodeGen {
 
 	/**
 	 * Return from procedure. The return value type is <em>not</em> checked -
-	 * this should happen before calling this method.
+	 * this should happen before calling this method. The generated code
+	 * will typically jump to the procedure's epilog (see {@link #exitProc(Symbol)}).
 	 * 
 	 * @param proc
 	 *            the symbol representing the procedure containing the RETURN
@@ -281,31 +288,31 @@ public interface CodeGen {
 	 * @param args
 	 *            the Attrib objects representing the argument values; may be
 	 *            <code>null</code>.
-	 * @return a new Attrib object representing the procedure's result;
+	 * @return a new Attrib object representing the procedure's return value;
 	 *         <code>null</code> if the procedure does not return a value.
 	 */
 	public Attrib callProc(Symbol proc, Attrib[] args) 
 	throws YAPLException;
 
 	/**
-	 * Call the predefined <code>write</code> procedure.
+	 * Generate code for writing a string constant to standard output.
 	 * 
 	 * @param string
-	 *            string to be written to standard output, enclosed in double
-	 *            quotes.
+	 *            string to be written, enclosed in double quotes.
 	 */
-	public void callWrite(String string) 
+	public void writeString(String string) 
 	throws YAPLException;
 
 	/**
-	 * Emit a branch instruction jumping to <code>label</code> if
+	 * Generate code jumping to <code>label</code> if
 	 * <code>condition</code> is <code>false</code>.
 	 */
 	public void branchIfFalse(Attrib condition, String label)
 	throws YAPLException;
 
-	/** Emit an unconditional jump to <code>label</code>. */
+	/** Generate code unconditionally jumping to <code>label</code>. */
 	public void jump(String label);
 
-	public void verifyArraySelector(Attrib a, Token t) throws YAPLException;
+	void verifyArraySelector(Attrib a, Token t) throws YAPLException;
+
 }

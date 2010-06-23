@@ -1,0 +1,16 @@
+Procedure _allocArray(len: Integer[]; dim, nDims: Integer): Integer
+Declare
+    a: Integer[];
+    i: Integer;
+Begin
+    a := new Integer[len[dim]];
+    dim := dim + 1;
+    If dim < nDims Then
+        i := 0;
+        While i < #a Do
+            a[i] := _allocArray(len, dim, nDims);
+            i := i + 1;
+        EndWhile;
+    EndIf;
+    Return a;        /* return base address of a, suppress type checking! */
+End _allocArray;
