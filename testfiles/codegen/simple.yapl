@@ -8,9 +8,12 @@ Declare
 	k: Integer;
 	b: Boolean;
 Begin
-	b := true And ((constant == constant-1) Or (3 < 4));
-	Write "b = true And ((constant == constant-1) Or (3 < 4)) = ";
-	writebool(b);
-	Write " (True expected)";
-	writeln();
+    k := 8;
+    k := +(k-2)*(k-1);
+	Write "k = +(k-2)*(k-1) = ";
+	writeint(k);
+	Write " (42 expected)";
+	writeln();    
+	Write "--- End test05 ---";
+    writeln();
 End test05.

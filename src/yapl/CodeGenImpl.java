@@ -131,6 +131,8 @@ public class CodeGenImpl implements CodeGen {
 		{
 			if (!(x.getType() instanceof IntegerType))
 				throw new IllegalOp1Type(op);
+			if(op.image == "-")
+				backend.neg();
 		}
 		return x;
 	}

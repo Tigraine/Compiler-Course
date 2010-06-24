@@ -233,7 +233,7 @@ public class BackendMJ implements BackendBinSM {
 		assignLabel(label);
 		emit(Mj.ENTER);
 		emit(nParams);
-		emit(nParams);
+		emit(nParams +20);
 		nextFreeLocalWord = nParams;
 		
 		/*for(int i = 0; i < nParams; i++)
