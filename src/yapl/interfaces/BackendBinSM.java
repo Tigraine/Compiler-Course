@@ -405,8 +405,6 @@ public interface BackendBinSM
      */
     public int paramOffset(int index);
 
-	int storeConst(int value);
-
-	public void loadConstData(int offset);
+	public void storeStaticConst(int addr, int value);
 
 }

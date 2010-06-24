@@ -227,12 +227,14 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public int storeConst(int value) {
-		return backend.storeConst(value);
+		int addr = backend.allocStaticData(1);
+		backend.storeStaticConst(addr, value);
+		return addr;
 	}
 
 	@Override
 	public void loadConstData(int address)
 	{
-		backend.loadConstData(address);
+		backend.loadWord(address, true);
 	}
 }

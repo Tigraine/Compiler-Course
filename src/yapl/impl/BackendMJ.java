@@ -141,8 +141,9 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public int allocStaticData(int words) {
-		// TODO Auto-generated method stub
-		return 0;
+		int address = currentDataAddress();
+		emitData(0);
+		return address;
 	}
 
 	@Override
@@ -327,6 +328,11 @@ public class BackendMJ implements BackendBinSM {
 			emit(Mj.LOAD);
 			emit(addr);
 		}
+		else
+		{
+			emit(Mj.GETSTATIC);
+			emit2(addr);
+		}
 	}
 	
 
@@ -336,6 +342,23 @@ public class BackendMJ implements BackendBinSM {
 		{
 			emit(Mj.STORE);
 			emit(addr);
+		}
+		else
+		{
+			emit(Mj.PUTSTATIC);
+			emit2(addr);
+		}
+	}
+	
+	@Override 
+	public void storeStaticConst(int addr, int value)
+	{
+		byte[] bytes = intToByteArray(value);
+		int i = 0;
+		for(byte b : bytes)
+		{
+			data.set((addr * 4) + i, b);
+			i++;
 		}
 	}
 
@@ -421,20 +444,6 @@ public class BackendMJ implements BackendBinSM {
 		emit2(addr);
 	}
 	
-	@Override
-	public int storeConst(int value)
-	{
-		int address = currentDataAddress();
-		emitData(value);
-		return address;
-	}
-
-	@Override
-	public void loadConstData(int offset) {
-		emit(Mj.GETSTATIC);
-		emit2(offset);
-	}
-
 	@Override
 	public void isNotEqual() {
 		isEqual();
