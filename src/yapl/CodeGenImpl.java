@@ -179,13 +179,18 @@ public class CodeGenImpl implements CodeGen {
 	}
 
 	@Override
-	public void storeConst(boolean value) {
-		backend.loadConst(backend.boolValue(value));
+	public int storeConst(boolean value) {
+		return storeConst(backend.boolValue(value));
 	}
 
 	@Override
-	public void storeConst(int value) {
-		backend.loadConst(value);
+	public int storeConst(int value) {
+		return backend.storeConst(value);
 	}
 
+	@Override
+	public void loadConstData(int address)
+	{
+		backend.loadConstData(address);
+	}
 }

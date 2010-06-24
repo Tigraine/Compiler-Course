@@ -75,8 +75,8 @@ public interface CodeGen {
 	public void allocVariable(Symbol sym) 
 	throws YAPLException;
 
-	public void storeConst(boolean value);
-	public void storeConst(int value);
+	public int storeConst(boolean value);
+	public int storeConst(int value);
 	
 	/**
 	 * Store length of given array dimension at run time.
@@ -317,5 +317,7 @@ public interface CodeGen {
 	public void jump(String label);
 
 	void verifyArraySelector(Attrib a, Token t) throws YAPLException;
+
+	void loadConstData(int address);
 
 }

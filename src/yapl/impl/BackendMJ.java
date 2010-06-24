@@ -34,7 +34,7 @@ public class BackendMJ implements BackendBinSM {
 		static final byte EXIT = (byte)49;
 		static final byte TRAP = (byte)55;
 		static final byte ENTER = (byte)48;
-		public static final byte CALL = (byte)46;
+		static final byte CALL = (byte)46;
 	}
 	private int codeSize = 0;
 	private int entryAddress = 0;
@@ -113,7 +113,11 @@ public class BackendMJ implements BackendBinSM {
 	}
 	private void emitData(int value)
 	{
-		emitData((byte)value);
+		byte[] arr = intToByteArray(value);
+		for(byte b : arr)
+		{
+			emitData(b);
+		}
 	}
 	
 	@Override
@@ -143,10 +147,10 @@ public class BackendMJ implements BackendBinSM {
 	public int allocStringConstant(String string) {
 		int startAddress = currentDataAddress();
 		for(int i = 0; i < string.length(); i++)
-			emitData(string.charAt(i));
-		emitData(0);
+			data.add((byte)string.charAt(i));
+		data.add((byte)0);
 		while (data.size() % 4 > 0)
-			emitData(0);
+			data.add((byte)0);
 		return startAddress;
 	}
 	
@@ -405,6 +409,20 @@ public class BackendMJ implements BackendBinSM {
 	public void writeString(int addr) {
 		emit(Mj.SPRINT);
 		emit2(addr);
+	}
+	
+	@Override
+	public int storeConst(int value)
+	{
+		int address = currentDataAddress();
+		emitData(value);
+		return address;
+	}
+
+	@Override
+	public void loadConstData(int offset) {
+		emit(Mj.GETSTATIC);
+		emit2(offset);
 	}
 
 }

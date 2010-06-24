@@ -89,20 +89,24 @@ TOKEN :
 	< STRING: "\"" ( " " | < LETTER > | < DIGIT > | < OTHERCHAR > )* "\"" > 
 }
 
-Type Literal() throws YAPLException :
+Attrib Literal() throws YAPLException :
 {
   Type t;
+  Attrib a;
   Token tok;}
 {
   < TRUE >  {
-    codeGen.storeConst(true);
-    return new BooleanType();  } | < FALSE >
+    a = new AttribImpl(new BooleanType());
+    a.setOffset(codeGen.storeConst(true));
+    return a;  } | < FALSE >
   {
-    codeGen.storeConst(false);
-    return new BooleanType();  } | tok = < NUMBER >
+    a = new AttribImpl(new BooleanType());
+    a.setOffset(codeGen.storeConst(false));
+    return a;  } | tok = < NUMBER >
   {
-    codeGen.storeConst(Integer.parseInt(tok.image));
-    return new IntegerType();  }}
+    a = new AttribImpl(new IntegerType());
+    a.setOffset(codeGen.storeConst(Integer.parseInt(tok.image)));
+    return a;  }}
 
 void PredefinedProcedures() throws YAPLException :
 {}
@@ -171,13 +175,16 @@ Attrib PrimaryExpr() throws YAPLException :
 {
   Token t;
   Attrib retVal = null;
-  Type type;
+  Attrib type;
 }{
-  (type = Literal()  {
-    return new AttribImpl(type);  } | "(" retVal = Expr() ")" | LOOKAHEAD(2) retVal = ProcedureCall(true) | t = < IDENT >
+  (retVal = Literal()  {
+    codeGen.loadConstData(retVal.getOffset());
+    return retVal;  } | "(" retVal = Expr() ")" | LOOKAHEAD(2) retVal = ProcedureCall(true) | t = < IDENT >
   {
     Symbol symbol = symbolTable.lookup(t.image);
     if (symbol.getKind() == SymbolKind.Procedure)    	throw new SymbolIllegalUseException(symbol);
+    if (symbol.getKind() == SymbolKind.Constant)
+    	codeGen.loadConstData(symbol.getOffset());
     retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal))? | retVal = ArrayLen())
 
   {
@@ -350,13 +357,14 @@ Attrib CreationExpr() throws YAPLException:
 
 void ConstDecl() throws YAPLException :
 { Token t;
-  Type type;
+  Attrib attrib;
 }{
   < CONST > t = <IDENT >
   {
     SymbolImpl sym = new SymbolImpl(t.image, SymbolKind.Constant);
-    symbolTable.addSymbol(sym);  } "=" type = Literal()  {
-    sym.setType(type);  } ";"}
+    symbolTable.addSymbol(sym);  } "=" attrib = Literal()  {
+    sym.setOffset(attrib.getOffset());
+    sym.setType(attrib.getType());  } ";"}
 
 void VarDecl() throws YAPLException :
 {
