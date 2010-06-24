@@ -21,6 +21,7 @@ public class AttribImpl implements Attrib {
 	public AttribImpl(Symbol symbol) {
 		this.type = symbol.getType();
 		this.offset = symbol.getOffset();
+		this.isGlobal = symbol.isGlobal();
 	}
 	
 	@Override

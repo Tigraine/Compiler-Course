@@ -32,7 +32,10 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public void allocVariable(Symbol sym) throws YAPLException {
-		sym.setOffset(backend.allocStack(1));
+		if (sym.isGlobal()) 
+			sym.setOffset(backend.allocStaticData(1));
+		else	
+			sym.setOffset(backend.allocStack(1));
 	}
 
 	@Override
@@ -55,13 +58,13 @@ public class CodeGenImpl implements CodeGen {
 		}
 		if (lvalue.getKind() != Attrib.AttribKind.ArrayElement)
 		{
-			backend.storeWord(lvalue.getOffset(), false);
+			backend.storeWord(lvalue.getOffset(), lvalue.isGlobal());
 		}
 	}
 	
 	@Override
 	public void loadVariable(Symbol symbol) {
-		backend.loadWord(symbol.getOffset(), false);
+		backend.loadWord(symbol.getOffset(), symbol.isGlobal());
 	}
 
 	@Override
