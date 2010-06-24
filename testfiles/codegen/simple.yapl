@@ -1,19 +1,17 @@
-/* CodeGen test input - expressions of primitive data types.
- * $Id: test05.yapl 115 2009-06-23 14:51:36Z mt $
+/* CodeGen test input - array expressions and assignments.
+ * $Id: test07.yapl 116 2009-06-25 06:22:14Z mt $
  */
-Program test05
+Program test07
 Declare
-	Const constant = 10;
-	Const true = True;
-	k: Integer;
-	b: Boolean;
+    Const len = 10;
+    Const true = True;
+    a: Integer[];
+    b: Boolean[];
 Begin
-    k := 8;
-    k := +(k-2)*(k-1);
-	Write "k = +(k-2)*(k-1) = ";
-	writeint(k);
-	Write " (42 expected)";
-	writeln();    
-	Write "--- End test05 ---";
+    a := new Integer[len];
     writeln();
-End test05.
+    a[0] := len;
+    
+    Write "a[0] = ";
+    writeint(a[0]);
+End test07.
