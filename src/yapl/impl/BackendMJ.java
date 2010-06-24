@@ -133,6 +133,7 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public int allocStack(int words) {
+		//TODO: This is hackish and will lead to bugs
 		int addr = nextFreeLocalWord;
 		nextFreeLocalWord += words;
 		return addr;
@@ -234,6 +235,7 @@ public class BackendMJ implements BackendBinSM {
 		emit(Mj.ENTER);
 		emit(nParams);
 		emit(nParams +20);
+		//TODO: This is hackish and will lead to bugs
 		nextFreeLocalWord = nParams;
 		
 		/*for(int i = 0; i < nParams; i++)
@@ -250,6 +252,7 @@ public class BackendMJ implements BackendBinSM {
 		assignLabel(label + "_end");
 		emit(Mj.EXIT);
 		emit(Mj.RETURN);
+		//TODO: This is hackish and will lead to bugs
 		nextFreeLocalWord = 0;
 	}
 
