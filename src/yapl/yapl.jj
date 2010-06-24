@@ -437,10 +437,18 @@ void IfStatement() throws YAPLException :
 void WhileStatement() throws YAPLException :
 {
   Attrib clause;
+  String startLabel = codeGen.newLabel();
+  String endLabel = codeGen.newLabel();
 }{
+  {
+    codeGen.assignLabel(startLabel);  }
   < WHILE > clause = Expr()  {
     if (!(clause.getType() instanceof BooleanType))
-      	throw new CondNotBoolException(token);  } < DO > StatementList() < ENDWHILE >}
+      	throw new CondNotBoolException(token);
+    codeGen.branchIfFalse(clause, endLabel);   } < DO > StatementList()
+  {
+    codeGen.jump(startLabel);
+    codeGen.assignLabel(endLabel);  }< ENDWHILE >}
 
 void ReturnStatement() throws YAPLException :
 {
