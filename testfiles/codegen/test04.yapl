@@ -9,8 +9,8 @@ Declare
 Begin
     Write "--- Start test04 ---";
     writeln();
-    k := 3;
     b := True;
+    k := 3;
 	Write "writeint(k): ";
 	writeint(k);
 	Write " (expected 3)";

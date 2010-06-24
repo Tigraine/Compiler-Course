@@ -185,6 +185,8 @@ Attrib PrimaryExpr() throws YAPLException :
     if (symbol.getKind() == SymbolKind.Procedure)    	throw new SymbolIllegalUseException(symbol);
     if (symbol.getKind() == SymbolKind.Constant)
     	codeGen.loadConstData(symbol.getOffset());
+    if (symbol.getKind() == SymbolKind.Variable)
+    	codeGen.loadVariable(symbol);
     retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal))? | retVal = ArrayLen())
 
   {
@@ -377,7 +379,7 @@ void VarDecl() throws YAPLException :
   {
     sym = new SymbolImpl(t.image, Symbol.SymbolKind.Variable);
     symbols.add(sym);
-    symbolTable.addSymbol(sym);  }
+    symbolTable.addSymbol(sym);      }
   ("," t = < IDENT >
   {
     sym = new SymbolImpl(t.image, Symbol.SymbolKind.Variable);
@@ -385,7 +387,8 @@ void VarDecl() throws YAPLException :
     symbolTable.addSymbol(sym);  })* ":" type = Type() ";"
   {
     for(Symbol s : symbols)    {
-      s.setType(type);     }  }}
+		s.setType(type);
+		codeGen.allocVariable(s);     }  }}
 
 void Decl() throws YAPLException :
 {}
@@ -401,7 +404,7 @@ void Assignment() throws YAPLException :
 }{
   t = < IDENT >  {
     Symbol symbol = symbolTable.lookup(t.image);
-    target = new AttribImpl(symbol.getType());
+    target = new AttribImpl(symbol);
     if (symbol.getKind() != SymbolKind.Variable && symbol.getKind() != SymbolKind.Parameter)
     	throw new SymbolIllegalUseException(symbol);  } (target = Selector(target))? t2 = ":=" source = Expr()
   {

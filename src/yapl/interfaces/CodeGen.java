@@ -320,4 +320,6 @@ public interface CodeGen {
 
 	void loadConstData(int address);
 
+	void loadVariable(Symbol symbol);
+
 }

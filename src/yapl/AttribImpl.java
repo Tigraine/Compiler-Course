@@ -1,6 +1,7 @@
 package yapl;
 
 import yapl.interfaces.Attrib;
+import yapl.interfaces.Symbol;
 import yapl.lib.Type;
 
 public class AttribImpl implements Attrib {
@@ -15,6 +16,11 @@ public class AttribImpl implements Attrib {
 
 	public AttribImpl(Type type) {
 		this.type = type;
+	}
+	
+	public AttribImpl(Symbol symbol) {
+		this.type = symbol.getType();
+		this.offset = symbol.getOffset();
 	}
 	
 	@Override

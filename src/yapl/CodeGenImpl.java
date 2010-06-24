@@ -9,6 +9,7 @@ import yapl.interfaces.BackendBinSM;
 import yapl.interfaces.CodeGen;
 import yapl.interfaces.Symbol;
 import yapl.interfaces.YAPLToken;
+import yapl.interfaces.Attrib.AttribKind;
 import yapl.lib.ArrayType;
 import yapl.lib.YAPLException;
 import yapl.types.BooleanType;
@@ -31,8 +32,7 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public void allocVariable(Symbol sym) throws YAPLException {
-		// TODO Auto-generated method stub
-
+		sym.setOffset(backend.allocStack(1));
 	}
 
 	@Override
@@ -53,6 +53,15 @@ public class CodeGenImpl implements CodeGen {
 		{
 			throw new TypeMismatchAssignException();
 		}
+		if (lvalue.getKind() != Attrib.AttribKind.ArrayElement)
+		{
+			backend.storeWord(lvalue.getOffset(), false);
+		}
+	}
+	
+	@Override
+	public void loadVariable(Symbol symbol) {
+		backend.loadWord(symbol.getOffset(), false);
 	}
 
 	@Override

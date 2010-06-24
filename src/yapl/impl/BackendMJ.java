@@ -133,8 +133,9 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public int allocStack(int words) {
-		// TODO Auto-generated method stub
-		return 0;
+		int addr = nextFreeLocalWord;
+		nextFreeLocalWord += words;
+		return addr;
 	}
 
 	@Override
@@ -225,12 +226,15 @@ public class BackendMJ implements BackendBinSM {
 		emit(Mj.DIV);
 	}
 
+	private int nextFreeLocalWord = 0;
+	
 	@Override
 	public void enterProc(String label, int nParams, boolean main) {
 		assignLabel(label);
 		emit(Mj.ENTER);
 		emit(nParams);
 		emit(nParams);
+		nextFreeLocalWord = nParams;
 		
 		/*for(int i = 0; i < nParams; i++)
 		{
@@ -246,6 +250,7 @@ public class BackendMJ implements BackendBinSM {
 		assignLabel(label + "_end");
 		emit(Mj.EXIT);
 		emit(Mj.RETURN);
+		nextFreeLocalWord = 0;
 	}
 
 	@Override
@@ -325,8 +330,10 @@ public class BackendMJ implements BackendBinSM {
 	@Override
 	public void storeWord(int addr, boolean staticData) {
 		if(!staticData)
+		{
 			emit(Mj.STORE);
 			emit(addr);
+		}
 	}
 
 	@Override
