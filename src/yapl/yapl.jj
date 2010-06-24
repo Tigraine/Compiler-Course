@@ -181,7 +181,7 @@ Attrib PrimaryExpr() throws YAPLException :
 Attrib ProcedureCall(boolean isFunction) throws YAPLException :
 { Token t;
 Attrib retVal;
-int argumentCount = 0;
+List<Attrib> arguments = new ArrayList<Attrib>();
 Token errorToken; }
 {
   t = < IDENT >
@@ -190,33 +190,37 @@ Token errorToken; }
     if (symbol.getKind() != SymbolKind.Procedure)
     	throw new SymbolIllegalUseException(symbol);
     if (isFunction && symbol.getType() == null)
-    	throw new ProcNotFuncExprException(symbol);
-    retVal = new AttribImpl(symbol.getType());  } "(" (argumentCount = ArgumentList(symbol))? errorToken = ")"
+    	throw new ProcNotFuncExprException(symbol);  } "(" (arguments = ArgumentList(symbol))? errorToken = ")"
 
   {
-    if (symbol.getParameters().size() != argumentCount)
+    if (symbol.getParameters().size() != arguments.size())
     	throw new TooFewArgsException(symbol, errorToken);
-    return retVal;  }}
-int ArgumentList(Symbol s) throws YAPLException:
+    Attrib[] arr = new Attrib[arguments.size()];
+	arr = arguments.toArray(arr);
+	return codeGen.callProc(symbol, arr);  }}
+List<Attrib> ArgumentList(Symbol s) throws YAPLException:
 {
 	int argumentCount = 1;
 	List<Symbol> parameters = s.getParameters();
 	Attrib arg;
+	List<Attrib> retVal = new ArrayList<Attrib>();
 }
 {
   arg = Expr()
   {
+    retVal.add(arg);
     if ((parameters.size() < argumentCount) || (!parameters.get(argumentCount-1).getType().isCompatible(arg.getType())))
     	throw new ArgNotApplicableException(argumentCount, s, token);
 	if (arg.getType() instanceof ArrayType && arg.getType().isReadonly() && !parameters.get(argumentCount-1).getType().isReadonly())
 		throw new ReadonlyArgException(argumentCount, s, token);      } ("," arg = Expr()  {
+    retVal.add(arg);
     argumentCount++;
     if ((parameters.size() < argumentCount) || (!parameters.get(argumentCount-1).getType().isCompatible(arg.getType())))
     	throw new ArgNotApplicableException(argumentCount, s, token);
 	if (arg.getType() instanceof ArrayType && arg.getType().isReadonly() && !parameters.get(argumentCount-1).getType().isReadonly())
 		throw new ReadonlyArgException(argumentCount, s, token);  })*
   {
-    return argumentCount;  }}
+    return retVal;  }}
 Attrib UnaryExpr () throws YAPLException:
 {
   Token t = null;
@@ -530,6 +534,7 @@ void Program() throws YAPLException :
     Token x;  }
   < PROGRAM > t = <IDENT >  {
     Symbol symbol = new SymbolImpl(t.image, SymbolKind.Program);
+    symbol.setGlobal(true);
     symbolTable.openScope(true);
     symbolTable.setParentSymbol(symbol);  } (Decl() | Procedure())*
   < BEGIN >  {
