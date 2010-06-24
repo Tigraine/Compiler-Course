@@ -1,5 +1,7 @@
 package yapl;
 
+import java.util.List;
+
 import yapl.exceptions.*;
 import yapl.impl.BackendMJ;
 import yapl.interfaces.Attrib;
@@ -62,8 +64,8 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public Attrib callProc(Symbol proc, Attrib[] args) throws YAPLException {
-		// TODO Auto-generated method stub
-		return null;
+		backend.callProc(proc.getName());
+		return new AttribImpl(proc.getType());
 	}
 
 	@Override
@@ -171,8 +173,19 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public void writeString(String string) throws YAPLException {
-		// TODO Auto-generated method stub
-		
+		String s = string.substring(1, string.length() -1);
+		int addr = backend.allocStringConstant(s);
+		backend.writeString(addr);
+	}
+
+	@Override
+	public void storeConst(boolean value) {
+		backend.loadConst(backend.boolValue(value));
+	}
+
+	@Override
+	public void storeConst(int value) {
+		backend.loadConst(value);
 	}
 
 }

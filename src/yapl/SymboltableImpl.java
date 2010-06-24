@@ -48,6 +48,7 @@ public class SymboltableImpl implements Symboltable {
 	public void openScope(boolean isGlobal) {
 		logger.log("Opening scope");
 		currentScope = new Scope(currentScope);
+		currentScope.setGlobal(isGlobal);
 		/*if (isGlobal) {
 			currentScope = new Scope();
 			logger.log("Opened new Global Scope");
