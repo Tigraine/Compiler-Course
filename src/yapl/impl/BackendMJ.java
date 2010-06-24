@@ -42,7 +42,7 @@ public class BackendMJ implements BackendBinSM {
 	private List<Byte> data = new ArrayList<Byte>();
 	//private ArrayLst<byte> code = new ArrayList<byte>();
 	
-	private Hashtable<String, Integer> backpatchList = new Hashtable<String, Integer>();
+	private Hashtable<String, List<Integer>> backpatchList = new Hashtable<String, List<Integer>>();
 	
 	public BackendMJ()
 	{
@@ -184,20 +184,29 @@ public class BackendMJ implements BackendBinSM {
 		int currentAddr = currentCodeAddress();
 		if (backpatchList.containsKey(label))
 		{
-			Integer codeToBackpatch = backpatchList.get(label);
-			byte base = (byte) 0xFF;
-			code.set(codeToBackpatch, (byte)((base << 8) & currentCodeAddress()));
-			code.set(codeToBackpatch +1, (byte)(base & currentCodeAddress()));
+			for(int address : backpatchList.get(label))
+			{
+				byte base = (byte) 0xFF;
+				code.set(address, (byte)((base << 8) & currentCodeAddress()));
+				code.set(address +1, (byte)(base & currentCodeAddress()));				
+			}
 		}
 		
 		labels.put(label, currentAddr);
+	}
+	
+	private void addBackpatch(String label, int address)
+	{
+		if (!backpatchList.containsKey(label))
+			backpatchList.put(label, new ArrayList<Integer>());
+		backpatchList.get(label).add(address);
 	}
 	
 	private int getLabelAddress(String label)
 	{
 		if (!labels.containsKey(label))
 		{
-			backpatchList.put(label, currentCodeAddress());
+			addBackpatch(label, currentCodeAddress());
 			return 0;
 		}
 		return labels.get(label);

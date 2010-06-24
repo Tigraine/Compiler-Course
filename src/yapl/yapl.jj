@@ -419,11 +419,20 @@ void Assignment() throws YAPLException :
 void IfStatement() throws YAPLException :
 {
   Attrib clause;
+  String endLabel = codeGen.newLabel();
+  String elseLabel = codeGen.newLabel();
 }
 {
   < IF > clause = Expr()  {
     if (!(clause.getType() instanceof BooleanType))
-      	throw new CondNotBoolException(token);  } < THEN > StatementList() (< ELSE > StatementList())? < ENDIF >}
+      	throw new CondNotBoolException(token);
+
+    codeGen.branchIfFalse(clause, elseLabel);  } < THEN > StatementList() (  {
+    codeGen.jump(endLabel);  }< ELSE >
+  {
+    codeGen.assignLabel(elseLabel);  } StatementList())? < ENDIF >
+  {
+    codeGen.assignLabel(endLabel);  }}
 
 void WhileStatement() throws YAPLException :
 {

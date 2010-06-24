@@ -67,8 +67,8 @@ public class CodeGenImpl implements CodeGen {
 	@Override
 	public void branchIfFalse(Attrib condition, String label)
 			throws YAPLException {
-		// TODO Auto-generated method stub
-
+		if (condition.getKind() == AttribKind.None)
+			backend.branchIf(false, label);
 	}
 
 	@Override
@@ -109,8 +109,7 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public void jump(String label) {
-		// TODO Auto-generated method stub
-
+		backend.jump(label);
 	}
 
 	@Override
@@ -119,10 +118,11 @@ public class CodeGenImpl implements CodeGen {
 
 	}
 
+	private int labels = 0;
 	@Override
 	public String newLabel() {
-		// TODO Auto-generated method stub
-		return null;
+		labels++;
+		return "tempLabel" + labels;
 	}
 
 	@Override
@@ -209,8 +209,7 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public void assignLabel(String label) {
-		// TODO Auto-generated method stub
-		
+		backend.assignLabel(label);
 	}
 
 	@Override

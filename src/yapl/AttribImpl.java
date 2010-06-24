@@ -8,7 +8,7 @@ public class AttribImpl implements Attrib {
 
 	private boolean isConstant;
 	private boolean isGlobal;
-	private AttribKind kind;
+	private AttribKind kind = AttribKind.None;
 	private int offset;
 	private Attrib offsetAttrib;
 	private byte register;
