@@ -432,4 +432,11 @@ public class BackendMJ implements BackendBinSM {
 		emit2(offset);
 	}
 
+	@Override
+	public void isNotEqual() {
+		isEqual();
+		loadConst(0);
+		and();
+	}
+
 }

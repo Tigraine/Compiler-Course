@@ -300,6 +300,8 @@ public interface BackendBinSM
      * </pre>
      */
     public void isEqual();
+    
+    public void isNotEqual();
 
     /**
      * Emit code for comparing the two top-most operands on the expression stack.

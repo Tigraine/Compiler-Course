@@ -90,9 +90,15 @@ public class CodeGenImpl implements CodeGen {
 	@Override
 	public Attrib equalOp(Attrib x, Token op, Attrib y)
 			throws YAPLException {
-		if (x.getType().isCompatible(y.getType()))
-			return new AttribImpl(new BooleanType());
-		throw new IllegalEqualOpTypeException(op);
+		if (!x.getType().isCompatible(y.getType()))
+			throw new IllegalEqualOpTypeException(op);
+		
+		if (op.image == "==")
+			backend.isEqual();
+		if (op.image == "")
+			backend.isNotEqual();
+		return new AttribImpl(new BooleanType());
+		
 	}
 
 	@Override
@@ -136,9 +142,26 @@ public class CodeGenImpl implements CodeGen {
 			if (!(x.getType() instanceof BooleanType && y.getType() instanceof BooleanType))
 				throw new IllegalOp2Type(op);
 		}
-		if (x.getType().isCompatible(y.getType()))
-			return x;
-		throw new IllegalOp2Type(op);
+		if (!x.getType().isCompatible(y.getType()))
+			throw new IllegalOp2Type(op);
+		
+		if (op.image == "+")
+			backend.add();
+		if (op.image == "-")
+			backend.sub();
+		if (op.image == "*")
+			backend.mul();
+		if (op.image == "/")
+			backend.div();
+		if (op.image == "%")
+			backend.mod();
+		if (op.kind == yapl.AND)
+			backend.and();
+		if (op.kind == yapl.OR)
+			backend.or();
+		
+		
+		return x;
 	}
 
 	@Override

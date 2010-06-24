@@ -325,9 +325,13 @@ Attrib EqualExpr () throws YAPLException:
 Attrib CondAndExpr () throws YAPLException:
 {
   Attrib retVal;
+  Token op;
+  Attrib expr2;
 }
 {
-  retVal = EqualExpr() (< AND > EqualExpr())*
+  retVal = EqualExpr() (op = < AND > expr2 = EqualExpr()
+  {
+    retVal = codeGen.op2(retVal, op, expr2);  })*
   {
     return retVal;  }}
 Attrib Expr() throws YAPLException:
