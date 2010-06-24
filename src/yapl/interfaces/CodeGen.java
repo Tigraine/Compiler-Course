@@ -75,6 +75,9 @@ public interface CodeGen {
 	public void allocVariable(Symbol sym) 
 	throws YAPLException;
 
+	public void storeConst(boolean value);
+	public void storeConst(int value);
+	
 	/**
 	 * Store length of given array dimension at run time.
 	 * The stored array dimensions are needed for run-time allocation of

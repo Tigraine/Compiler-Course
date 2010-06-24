@@ -47,10 +47,30 @@ public class BackendMJ implements BackendBinSM {
 	public BackendMJ()
 	{
 		//Initialize Built-In Methods
+		
+		//writeln
 		enterProc("writeln", 0, false);
 		int addr = allocStringConstant("\n");
 		writeString(addr);
 		exitProc("writeln");
+		
+		//writeint
+		enterProc("writeint", 1, false);
+		loadWord(0, false);
+		writeInteger();
+		exitProc("writeint");
+		
+		//writebool
+		enterProc("writebool", 1, false);
+		loadWord(0, false);
+		int a = allocStringConstant("True");
+		int b = allocStringConstant("False");
+		branchIf(true, "writebool_true");
+		writeString(b);
+		exitProc("writebool");
+		assignLabel("writebool_true");
+		writeString(a);
+		exitProc("writebool");
 	}
 	
 	private int currentCodeAddress()

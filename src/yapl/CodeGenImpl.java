@@ -173,8 +173,19 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public void writeString(String string) throws YAPLException {
-		int addr = backend.allocStringConstant(string);
+		String s = string.substring(1, string.length() -1);
+		int addr = backend.allocStringConstant(s);
 		backend.writeString(addr);
+	}
+
+	@Override
+	public void storeConst(boolean value) {
+		backend.loadConst(backend.boolValue(value));
+	}
+
+	@Override
+	public void storeConst(int value) {
+		backend.loadConst(value);
 	}
 
 }
