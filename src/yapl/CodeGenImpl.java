@@ -167,6 +167,14 @@ public class CodeGenImpl implements CodeGen {
 	@Override
 	public Attrib relOp(Attrib x, Token op, Attrib y) throws YAPLException {
 		if (x.getType() instanceof IntegerType && y.getType() instanceof IntegerType) {
+			if (op.image == "<")
+				backend.isLess();
+			else if (op.image == ">")
+				backend.isGreater();
+			else if (op.image == ">=")
+				backend.isGreaterOrEqual();
+			else if (op.image == "<=")
+				backend.isLessOrEqual();
 			return new AttribImpl(new BooleanType());
 		}
 		throw new IllegalRelOpTypeException(op);

@@ -1,0 +1,16 @@
+/* CodeGen test input - expressions of primitive data types.
+ * $Id: test05.yapl 115 2009-06-23 14:51:36Z mt $
+ */
+Program test05
+Declare
+	Const constant = 10;
+	Const true = True;
+	k: Integer;
+	b: Boolean;
+Begin
+	b := true And ((constant == constant-1) Or (3 < 4));
+	Write "b = true And ((constant == constant-1) Or (3 < 4)) = ";
+	writebool(b);
+	Write " (True expected)";
+	writeln();
+End test05.
