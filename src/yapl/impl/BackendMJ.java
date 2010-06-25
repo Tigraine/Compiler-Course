@@ -35,6 +35,7 @@ public class BackendMJ implements BackendBinSM {
 		static final byte TRAP = (byte)55;
 		static final byte ENTER = (byte)48;
 		static final byte CALL = (byte)46;
+		static final byte POP = (byte)38;
 	}
 	private int codeSize = 0;
 	private int entryAddress = 0;
@@ -458,6 +459,11 @@ public class BackendMJ implements BackendBinSM {
 		isEqual();
 		loadConst(0);
 		and();
+	}
+
+	@Override
+	public void removeOperand() {
+		emit(Mj.POP);
 	}
 
 }

@@ -429,10 +429,11 @@ void IfStatement() throws YAPLException :
     if (!(clause.getType() instanceof BooleanType))
       	throw new CondNotBoolException(token);
 
-    codeGen.branchIfFalse(clause, elseLabel);  } < THEN > StatementList() (  {
-    codeGen.jump(endLabel);  }< ELSE >
+    codeGen.branchIfFalse(clause, elseLabel);  } < THEN > StatementList()
   {
-    codeGen.assignLabel(elseLabel);  } StatementList())? < ENDIF >
+    codeGen.jump(endLabel);
+    codeGen.assignLabel(elseLabel);
+  }  ( < ELSE > StatementList())? < ENDIF >
   {
     codeGen.assignLabel(endLabel);  }}
 
@@ -454,7 +455,7 @@ void WhileStatement() throws YAPLException :
 
 void ReturnStatement() throws YAPLException :
 {
-  Attrib a;
+  Attrib a = null;
   Symbol s = symbolTable.getNearestParentSymbol(SymbolKind.Procedure);
   boolean returnedValue = false;
 }{
@@ -470,7 +471,8 @@ void ReturnStatement() throws YAPLException :
     if (s == null) return;
     if (s.getType() != null && !returnedValue)
     	throw new InvalidReturnTypeException(s, token); 
-    s.setReturnSeen(true);  }}
+    s.setReturnSeen(true);
+    codeGen.returnFromProc(s, a);  }}
 
 void WriteStatement() throws YAPLException :
 {

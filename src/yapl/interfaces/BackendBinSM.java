@@ -407,4 +407,6 @@ public interface BackendBinSM
 
 	public void storeStaticConst(int addr, int value);
 
+	public void removeOperand();
+
 }

@@ -1,19 +1,38 @@
-/* CodeGen test input - expressions of primitive data types.
- * $Id: test05.yapl 115 2009-06-23 14:51:36Z mt $
+/* CodeGen test input - procedures with call-by-value parameters
+ *                      and with Return statements.
+ * $Id: test15.yapl 150 2010-04-15 15:55:58Z mt $
  */
-Program test05
-Declare
-	Const constant = 10;
-	Const true = True;
-	k: Integer;
-	b: Boolean;
+Program test15
+
+/* Print value if value >= threshold. */
+Procedure printIF(value, threshold: Integer)
 Begin
-    k := 8;
-    k := +(k-2)*(k-1);
-	Write "k = +(k-2)*(k-1) = ";
-	writeint(k);
-	Write " (42 expected)";
-	writeln();    
-	Write "--- End test05 ---";
-    writeln();
-End test05.
+    If value < threshold Then
+        Return;
+    EndIf;
+    writeint(value);
+    Write " ";
+End printIF;
+
+Procedure print(val : Integer)
+Begin
+	writeint(val);
+	Write ".";
+	writeln();
+End print;
+
+Procedure square(x: Integer): Integer
+Begin
+    Return x*x;
+End square;
+
+Declare
+    Const N = 8;
+    k, t: Integer;
+Begin
+    k := 1;
+    While k < 5 Do
+        print(square(k));
+        k := k+1;
+    EndWhile;
+End test15.
