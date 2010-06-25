@@ -555,8 +555,11 @@ List<Symbol> parameters = null;
     	symbol.setParameters(parameters);  }
   (":" type = Type()  {
     symbol.setType(type);  })?
+  {
+    codeGen.enterProc(symbol);  }
   Block() t = < IDENT >
   {
+    codeGen.exitProc(symbol);
     Symbol parent = symbolTable.getNearestParentSymbol(SymbolKind.Procedure);
     if (!parent.getName().equals(t.image))    	throw new EndIdentifierMismatchException(parent, t.image); 
     symbolTable.closeScope();  }
