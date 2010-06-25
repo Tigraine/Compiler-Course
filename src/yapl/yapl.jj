@@ -352,16 +352,21 @@ Attrib CreationExpr() throws YAPLException:
   Type type;
   Token errorToken;
   Attrib index;
+  int arrayDim = 0;
 }{
   < NEW > (<INTEGER >  {
     type = new IntegerType();  }|< BOOLEAN >  {
     type = new BooleanType();  }) "[" index = Expr() errorToken = "]"  {
     codeGen.verifyArraySelector(index, errorToken);
-    type = new ArrayType(type);  } ("[" index = Expr() errorToken = "]"  {
+    codeGen.storeArrayDim(arrayDim, index);
+    type = new ArrayType(type);
+    arrayDim++;  } ("[" index = Expr() errorToken = "]"  {
     codeGen.verifyArraySelector(index, errorToken);
-    type = new ArrayType(type);  })*
+    codeGen.storeArrayDim(arrayDim, index);
+    type = new ArrayType(type);
+    arrayDim++;  })*
   {
-    return new AttribImpl(type);  }}
+    return codeGen.allocArray((ArrayType)type);  }}
 
 void ConstDecl() throws YAPLException :
 { Token t;

@@ -11,6 +11,7 @@ import yapl.interfaces.Symbol;
 import yapl.interfaces.YAPLToken;
 import yapl.interfaces.Attrib.AttribKind;
 import yapl.lib.ArrayType;
+import yapl.lib.Type;
 import yapl.lib.YAPLException;
 import yapl.types.BooleanType;
 import yapl.types.IntegerType;
@@ -26,8 +27,11 @@ public class CodeGenImpl implements CodeGen {
 	
 	@Override
 	public Attrib allocArray(ArrayType arrayType) throws YAPLException {
-		// TODO Auto-generated method stub
-		return null;
+		int allocStack = backend.allocStack(1);
+		backend.allocArray();
+		backend.storeWord(allocStack, false);
+		AttribImpl attribImpl = new AttribImpl(arrayType);
+		return attribImpl;
 	}
 
 	@Override
@@ -199,8 +203,7 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public void storeArrayDim(int dim, Attrib length) throws YAPLException {
-		// TODO Auto-generated method stub
-
+		backend.storeArrayDim(dim);
 	}
 
 	@Override

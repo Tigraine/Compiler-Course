@@ -36,6 +36,7 @@ public class BackendMJ implements BackendBinSM {
 		static final byte ENTER = (byte)48;
 		static final byte CALL = (byte)46;
 		static final byte POP = (byte)38;
+		static final byte NEWARRAY = (byte)32;
 	}
 	private int codeSize = 0;
 	private int entryAddress = 0;
@@ -72,6 +73,8 @@ public class BackendMJ implements BackendBinSM {
 		assignLabel("writebool_true");
 		writeString(a);
 		exitProc("writebool");
+		
+		arrayTemp = allocStaticData(1);
 	}
 	
 	private int currentCodeAddress()
@@ -126,11 +129,20 @@ public class BackendMJ implements BackendBinSM {
 		emit(Mj.ADD);
 	}
 
+
+	@Override
+	public void storeArrayDim(int dim) {
+		//loadConst(dim);
+		//mul();
+		storeWord(arrayTemp, true);
+	}
+	
 	@Override
 	public void allocArray() {
-		// TODO Auto-generated method stub
-
-	}
+		loadWord(arrayTemp, true);
+		emit(Mj.NEWARRAY);
+		emit(0);
+	}	
 
 	@Override
 	public int allocStack(int words) {
@@ -239,6 +251,7 @@ public class BackendMJ implements BackendBinSM {
 	}
 
 	private int nextFreeLocalWord = 0;
+	private int arrayTemp;
 	
 	@Override
 	public void enterProc(String label, int nParams, boolean main) {
@@ -391,12 +404,6 @@ public class BackendMJ implements BackendBinSM {
 	public int paramOffset(int index) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public void storeArrayDim(int dim) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
