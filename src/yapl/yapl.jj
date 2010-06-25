@@ -147,13 +147,18 @@ Attrib Selector(Attrib a) throws YAPLException :
 {
 Token errorToken;
 Token errorToken2;
-Attrib index;}
+Attrib index;
+}
 {
   errorToken = "[" index = Expr() errorToken2 = "]" (a = Selector(a))?
   {
     codeGen.verifyArraySelector(index, errorToken2);
     if (a.getType() instanceof ArrayType)    {
-      return new AttribImpl(((ArrayType)a.getType()).getElementType());    }    
+      Attrib retVal = new AttribImpl(((ArrayType)a.getType()).getElementType());
+      retVal.setOffset(a.getOffset());
+      retVal.setKind(Attrib.AttribKind.ArrayElement);
+      retVal.setGlobal(a.isGlobal());
+      return retVal;    }    
     throw new SelectorNotArrayException(errorToken);  }}
 
 Attrib ArrayLen() throws YAPLException :
@@ -170,7 +175,8 @@ Attrib retVal; }{
     {
       throw new ArrayLenNotArrayException(errorToken);
     }
-    return new AttribImpl(new IntegerType());  }}
+    codeGen.loadVariable(symbol);
+    return codeGen.arrayLength(retVal);  }}
 Attrib PrimaryExpr() throws YAPLException :
 {
   Token t;
@@ -182,14 +188,19 @@ Attrib PrimaryExpr() throws YAPLException :
     return retVal;  } | "(" retVal = Expr() ")" | LOOKAHEAD(2) retVal = ProcedureCall(true) | t = < IDENT >
   {
     Symbol symbol = symbolTable.lookup(t.image);
-    if (symbol.getKind() == SymbolKind.Procedure)    	throw new SymbolIllegalUseException(symbol);
+    if (symbol.getKind() == SymbolKind.Procedure)
+    	throw new SymbolIllegalUseException(symbol);
     if (symbol.getKind() == SymbolKind.Constant)
     	codeGen.loadConstData(symbol.getOffset());
-    if (symbol.getKind() == SymbolKind.Variable)
+	else
+	{
     	codeGen.loadVariable(symbol);
-    if (symbol.getKind() == SymbolKind.Parameter)
-    	codeGen.loadVariable(symbol);
-    retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal))? | retVal = ArrayLen())
+    }
+    retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal)
+  	{
+    	codeGen.loadArrayElement();
+    }
+    )? | retVal = ArrayLen())
 
   {
     return retVal;  }}
@@ -417,7 +428,8 @@ void Assignment() throws YAPLException :
     Symbol symbol = symbolTable.lookup(t.image);
     target = new AttribImpl(symbol);
     if (symbol.getKind() != SymbolKind.Variable && symbol.getKind() != SymbolKind.Parameter)
-    	throw new SymbolIllegalUseException(symbol);  } (target = Selector(target))? t2 = ":=" source = Expr()
+    	throw new SymbolIllegalUseException(symbol);  } (  {
+    codeGen.arrayOffset(target, null);  }target = Selector(target))? t2 = ":=" source = Expr()
   {
     if (target.getType().isReadonly())
 		throw new ReadonlyAssignException(t);

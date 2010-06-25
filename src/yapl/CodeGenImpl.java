@@ -10,6 +10,7 @@ import yapl.interfaces.CodeGen;
 import yapl.interfaces.Symbol;
 import yapl.interfaces.YAPLToken;
 import yapl.interfaces.Attrib.AttribKind;
+import yapl.interfaces.Symbol.SymbolKind;
 import yapl.lib.ArrayType;
 import yapl.lib.Type;
 import yapl.lib.YAPLException;
@@ -27,10 +28,9 @@ public class CodeGenImpl implements CodeGen {
 	
 	@Override
 	public Attrib allocArray(ArrayType arrayType) throws YAPLException {
-		int allocStack = backend.allocStack(1);
 		backend.allocArray();
-		backend.storeWord(allocStack, false);
 		AttribImpl attribImpl = new AttribImpl(arrayType);
+		attribImpl.setKind(AttribKind.Address);
 		return attribImpl;
 	}
 
@@ -44,14 +44,18 @@ public class CodeGenImpl implements CodeGen {
 
 	@Override
 	public Attrib arrayLength(Attrib arr) throws YAPLException {
-		// TODO Auto-generated method stub
-		return null;
+		backend.arrayLength();
+		return new AttribImpl(new IntegerType());
 	}
 
 	@Override
 	public void arrayOffset(Attrib arr, Attrib index) throws YAPLException {
-		// TODO Auto-generated method stub
-
+		backend.loadWord(arr.getOffset(), arr.isGlobal());
+	}
+	
+	@Override
+	public void loadArrayElement() {
+		backend.loadArrayElement();
 	}
 
 	@Override
@@ -63,6 +67,10 @@ public class CodeGenImpl implements CodeGen {
 		if (lvalue.getKind() != Attrib.AttribKind.ArrayElement)
 		{
 			backend.storeWord(lvalue.getOffset(), lvalue.isGlobal());
+		}
+		else
+		{
+			backend.storeArrayElement();
 		}
 	}
 	

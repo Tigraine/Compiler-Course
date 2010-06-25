@@ -37,6 +37,9 @@ public class BackendMJ implements BackendBinSM {
 		static final byte CALL = (byte)46;
 		static final byte POP = (byte)38;
 		static final byte NEWARRAY = (byte)32;
+		static final byte ARRAYLEN = (byte)37;
+		static final byte ALOAD = (byte)33;
+		static final byte ASTORE = (byte)34;
 	}
 	private int codeSize = 0;
 	private int entryAddress = 0;
@@ -141,7 +144,7 @@ public class BackendMJ implements BackendBinSM {
 	public void allocArray() {
 		loadWord(arrayTemp, true);
 		emit(Mj.NEWARRAY);
-		emit(0);
+		emit(1);
 	}	
 
 	@Override
@@ -186,8 +189,7 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void arrayLength() {
-		// TODO Auto-generated method stub
-
+		emit(Mj.ARRAYLEN);
 	}
 
 	private Hashtable<String, Integer> labels = new Hashtable<String, Integer>();
@@ -325,8 +327,7 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void loadArrayElement() {
-		// TODO Auto-generated method stub
-
+		emit(Mj.ALOAD);
 	}
 
 	@Override
@@ -408,8 +409,7 @@ public class BackendMJ implements BackendBinSM {
 
 	@Override
 	public void storeArrayElement() {
-		// TODO Auto-generated method stub
-
+		emit(Mj.ASTORE);
 	}
 
 	@Override

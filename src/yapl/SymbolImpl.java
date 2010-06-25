@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import yapl.interfaces.Symbol;
+import yapl.lib.ArrayType;
 import yapl.lib.Type;
 
 public class SymbolImpl implements Symbol {
@@ -101,6 +102,8 @@ public class SymbolImpl implements Symbol {
 	@Override
 	public void setType(Type type) {
 		this.type = type;
+		if (type instanceof ArrayType)
+			isReference = true;
 	}
 
 	@Override

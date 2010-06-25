@@ -322,4 +322,7 @@ public interface CodeGen {
 
 	void loadVariable(Symbol symbol);
 
+	void loadArrayElement();
+
+
 }

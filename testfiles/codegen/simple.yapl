@@ -3,15 +3,9 @@
  */
 Program test07
 Declare
-    Const len = 10;
-    Const true = True;
     a: Integer[];
-    b: Boolean[];
 Begin
-    a := new Integer[len];
-    writeln();
-    a[0] := len;
-    
-    Write "a[0] = ";
-    writeint(a[0]);
+    a := new Integer[10];
+    a[2] := 100;
+    writeint(a[2]);
 End test07.
