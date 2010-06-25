@@ -187,6 +187,8 @@ Attrib PrimaryExpr() throws YAPLException :
     	codeGen.loadConstData(symbol.getOffset());
     if (symbol.getKind() == SymbolKind.Variable)
     	codeGen.loadVariable(symbol);
+    if (symbol.getKind() == SymbolKind.Parameter)
+    	codeGen.loadVariable(symbol);
     retVal = new AttribImpl(symbol.getType());  } (retVal = Selector(retVal))? | retVal = ArrayLen())
 
   {
@@ -522,10 +524,13 @@ List<Symbol> FormalParam() throws YAPLException :
   {
     if (readOnly && !(type instanceof ArrayType))
     	throw new ReadonlyNotArrayException(read);
+    int i = 0;
     for(Symbol s : symbols)
     {
       s.setType(type);
-      type.setReadonly(readOnly);    }
+      type.setReadonly(readOnly);
+      s.setOffset(i);
+      i++;    }
     return symbols;  }}
 
 List<Symbol> FormalParamList() throws YAPLException :
