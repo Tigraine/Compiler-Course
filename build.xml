@@ -20,7 +20,7 @@ Example for running:   ant run -Dyapl=test01.yapl
   <!-- set global properties for this build --> 
   <property name="src" location="src"/> 
   <property name="build" location="bin-ant"/> 
-  <property name="javacc" location="C:\Program Files\eclipse\plugins\sf.eclipse.javacc_1.5.17\"/> 
+  <property name="javacc" location="C:\Program Files (x86)\eclipse\plugins\sf.eclipse.javacc_1.5.17\"/> 
   <property name="yapl" location="test.yapl"/> 
   <property name="outfile" location="test.mj"/>
   <property name="grammar" location="${src}/yapl/yapl.jj"/> 
