@@ -35,11 +35,12 @@ public class Program {
 
 	private static yapl parser = new yapl(new StringReader(PREDEFINED_PROCEDURES));
 	public static void main(String[] args) {
-		if (args.length != 1) {
+		if (args.length < 1) {
 			writeUsage();
 			return;
 		}
 		String programName = args[0];
+		String outputName = args[1];
 		try {
 		    FileInputStream fis = new FileInputStream(programName);
 		    BackendMJ backend = new BackendMJ();
@@ -51,7 +52,7 @@ public class Program {
 		    parser.Start();
 
 		    CompilerMessage.printOK(programName);
-		    backend.writeObjectFile(new FileOutputStream(programName + ".out"));
+		    backend.writeObjectFile(new FileOutputStream(outputName));
 	    } catch (YAPLException ex) {
 	    	writeError(ex, programName);
 		} catch (ParseException e) {

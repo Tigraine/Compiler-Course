@@ -22,6 +22,7 @@ Example for running:   ant run -Dyapl=test01.yapl
   <property name="build" location="bin-ant"/> 
   <property name="javacc" location="C:\Program Files\eclipse\plugins\sf.eclipse.javacc_1.5.17\"/> 
   <property name="yapl" location="test.yapl"/> 
+  <property name="outfile" location="test.mj"/>
   <property name="grammar" location="${src}/yapl/yapl.jj"/> 
  
  
@@ -51,6 +52,7 @@ Example for running:   ant run -Dyapl=test01.yapl
               <pathelement path="${java.class.path}"/> 
           </classpath> 
           <arg value="${yapl}"/> 
+		  <arg value="${outfile}"/>
       </java> 
   </target> 
 	
